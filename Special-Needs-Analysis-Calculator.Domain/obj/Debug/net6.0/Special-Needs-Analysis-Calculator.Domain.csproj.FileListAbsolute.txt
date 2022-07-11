@@ -1,0 +1,12 @@
+C:\Users\jmantello\Documents\Visual Studio 2022\Projects\Special-Needs-Analysis-Calculator-Backend\Special-Needs-Analysis-Calculator.Domain\bin\Debug\net6.0\Special-Needs-Analysis-Calculator.Domain.deps.json
+C:\Users\jmantello\Documents\Visual Studio 2022\Projects\Special-Needs-Analysis-Calculator-Backend\Special-Needs-Analysis-Calculator.Domain\bin\Debug\net6.0\Special-Needs-Analysis-Calculator.Domain.dll
+C:\Users\jmantello\Documents\Visual Studio 2022\Projects\Special-Needs-Analysis-Calculator-Backend\Special-Needs-Analysis-Calculator.Domain\bin\Debug\net6.0\Special-Needs-Analysis-Calculator.Domain.pdb
+C:\Users\jmantello\Documents\Visual Studio 2022\Projects\Special-Needs-Analysis-Calculator-Backend\Special-Needs-Analysis-Calculator.Domain\obj\Debug\net6.0\Special-Needs-Analysis-Calculator.Domain.csproj.AssemblyReference.cache
+C:\Users\jmantello\Documents\Visual Studio 2022\Projects\Special-Needs-Analysis-Calculator-Backend\Special-Needs-Analysis-Calculator.Domain\obj\Debug\net6.0\Special-Needs-Analysis-Calculator.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jmantello\Documents\Visual Studio 2022\Projects\Special-Needs-Analysis-Calculator-Backend\Special-Needs-Analysis-Calculator.Domain\obj\Debug\net6.0\Special-Needs-Analysis-Calculator.Domain.AssemblyInfoInputs.cache
+C:\Users\jmantello\Documents\Visual Studio 2022\Projects\Special-Needs-Analysis-Calculator-Backend\Special-Needs-Analysis-Calculator.Domain\obj\Debug\net6.0\Special-Needs-Analysis-Calculator.Domain.AssemblyInfo.cs
+C:\Users\jmantello\Documents\Visual Studio 2022\Projects\Special-Needs-Analysis-Calculator-Backend\Special-Needs-Analysis-Calculator.Domain\obj\Debug\net6.0\Special-Needs-Analysis-Calculator.Domain.csproj.CoreCompileInputs.cache
+C:\Users\jmantello\Documents\Visual Studio 2022\Projects\Special-Needs-Analysis-Calculator-Backend\Special-Needs-Analysis-Calculator.Domain\obj\Debug\net6.0\Special-Needs-Analysis-Calculator.Domain.dll
+C:\Users\jmantello\Documents\Visual Studio 2022\Projects\Special-Needs-Analysis-Calculator-Backend\Special-Needs-Analysis-Calculator.Domain\obj\Debug\net6.0\refint\Special-Needs-Analysis-Calculator.Domain.dll
+C:\Users\jmantello\Documents\Visual Studio 2022\Projects\Special-Needs-Analysis-Calculator-Backend\Special-Needs-Analysis-Calculator.Domain\obj\Debug\net6.0\Special-Needs-Analysis-Calculator.Domain.pdb
+C:\Users\jmantello\Documents\Visual Studio 2022\Projects\Special-Needs-Analysis-Calculator-Backend\Special-Needs-Analysis-Calculator.Domain\obj\Debug\net6.0\ref\Special-Needs-Analysis-Calculator.Domain.dll
