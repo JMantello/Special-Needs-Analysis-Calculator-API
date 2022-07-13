@@ -20,7 +20,7 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             return "From Special Needs Analysis Controller Index.";
         }
 
-        [HttpPost]
+        [HttpPost("CreateUser")]
         public bool CreateUser(UserModel input)
         {
             if (!ModelState.IsValid) return false;
