@@ -9,7 +9,6 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<SpecialNeedsAnalysisDbContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("SpecialNeedsAnalysisDb"));
-    
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
