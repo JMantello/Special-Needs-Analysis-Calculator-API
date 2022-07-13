@@ -18,29 +18,36 @@ namespace Special_Needs_Analysis_Calculator.Data
 
         private static void AddUsers(SpecialNeedsAnalysisDbContext context)
         {
-            UserModel? user = context.Users.FirstOrDefault();
+            UserDocument? user = context.Users.FirstOrDefault();
             if (user != null) return;
 
-            context.Users.Add(new UserModel
+            UserDocument newUser1 = new UserDocument();
+            newUser1.User = new UserModel
             {
                 FirstName = "Iris",
                 LastName = "Rowe",
                 Email = "irowe2@gmail.com"
-            });
+            };
 
-            context.Users.Add(new UserModel
+            UserDocument newUser2 = new UserDocument();
+            newUser2.User = new UserModel
             {
                 FirstName = "Torren",
                 LastName = "Bower",
                 Email = "tbower@gmail.com"
-            });
+            };
 
-            context.Users.Add(new UserModel
+            UserDocument newUser3 = new UserDocument();
+            newUser3.User = new UserModel
             {
                 FirstName = "Uly",
                 LastName = "Roots",
                 Email = "uroots55@gmail.com"
-            });
+            };
+
+            context.Users.Add(newUser1);
+            context.Users.Add(newUser2);
+            context.Users.Add(newUser3);
 
             context.SaveChanges();
         }

@@ -10,7 +10,7 @@ using Special_Needs_Analysis_Calculator.Data;
 namespace Special_Needs_Analysis_Calculator.Data.Migrations
 {
     [DbContext(typeof(SpecialNeedsAnalysisDbContext))]
-    partial class ProjectDataContextModelSnapshot : ModelSnapshot
+    partial class SpecialNeedsAnalysisDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -19,27 +19,19 @@ namespace Special_Needs_Analysis_Calculator.Data.Migrations
                 .HasAnnotation("ProductVersion", "6.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.UseSerialColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Special_Needs_Analysis_Calculator.Data.UserModel", b =>
+            modelBuilder.Entity("Special_Needs_Analysis_Calculator.Data.UserDocument", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseSerialColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Email")
+                    b.Property<UserModel>("User")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("jsonb");
 
                     b.HasKey("Id");
 
