@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "Kestrel": {
+    "Start": {
       "commandName": "Project",
       "launchBrowser": false,
       "launchUrl": "swagger",

@@ -19,7 +19,7 @@ namespace Special_Needs_Analysis_Calculator.Data
         private static void AddUsers(SpecialNeedsAnalysisDbContext context)
         {
             UserDocument? user = context.Users.FirstOrDefault();
-            if (user != null) return;
+            if (user != null) return;               // exit seeder on user exists
 
             UserDocument newUser1 = new UserDocument();
             newUser1.User = new UserModel
