@@ -18,7 +18,6 @@ namespace Special_Needs_Analysis_Calculator.Data
             modelBuilder.Entity<UserDocument>()
                 .Property(d => d.User)
                 .HasColumnType("jsonb");
-
         }
 
         public DbSet<UserDocument> Users { get; set; }

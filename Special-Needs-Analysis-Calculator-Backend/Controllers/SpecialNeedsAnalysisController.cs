@@ -8,10 +8,12 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
     public class SpecialNeedsAnalysisController : Controller
     {
         private readonly SpecialNeedsAnalysisDbContext context;
+        private readonly UserDB user;
 
         public SpecialNeedsAnalysisController(SpecialNeedsAnalysisDbContext context)
         {
             this.context = context;
+            this.user = new UserDB(context);
         }
 
         [HttpGet]
@@ -23,7 +25,8 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         [HttpPost("CreateUser")]
         public async Task<bool> CreateUser(UserModel userInfo)
         {
-            if (!ModelState.IsValid) return false;
+            return user.AddUser(userInfo);
+            /*if (!ModelState.IsValid) return false;
             try
             {
                 UserDocument userDocument = new UserDocument();
@@ -36,7 +39,7 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             {
                 Console.WriteLine(e.Message);
                 return false;
-            }
+            }*/
         }
 
     }

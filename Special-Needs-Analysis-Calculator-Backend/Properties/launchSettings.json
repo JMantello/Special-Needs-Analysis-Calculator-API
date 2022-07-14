@@ -9,14 +9,14 @@
     }
   },
   "profiles": {
-    "Kestrel": {
+    "Start": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:7266;http://localhost:5266",
+      "applicationUrl": "http://localhost:5266",
       "dotnetRunMessages": true
     },
     "IIS Express": {
