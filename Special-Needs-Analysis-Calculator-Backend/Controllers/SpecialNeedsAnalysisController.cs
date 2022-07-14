@@ -21,19 +21,22 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         }
 
         [HttpPost("CreateUser")]
-        public bool CreateUser(UserModel input)
+        public async Task<bool> CreateUser(UserModel userInfo)
         {
             if (!ModelState.IsValid) return false;
-
-            UserModel newUser = new UserModel();
-            newUser.FirstName = input.FirstName;
-            newUser.LastName = input.LastName;
-            newUser.Email = input.Email;
-            
-            context.Users.Add(newUser);
-            context.SaveChanges();
-
-            return true;
+            try
+            {
+                UserDocument userDocument = new UserDocument();
+                userDocument.User = userInfo;
+                context.Users.Add(userDocument);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
         }
 
     }
