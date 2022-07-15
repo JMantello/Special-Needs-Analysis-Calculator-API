@@ -9,5 +9,10 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.Person.Info
     public class ExpensesModel
     {
         public double MonthlyExpenses { get; set; }     //Estimate
+
+        public ExpensesModel (double monthlyExpenses)
+        {
+            this.MonthlyExpenses = monthlyExpenses;
+        }
     }
 }
