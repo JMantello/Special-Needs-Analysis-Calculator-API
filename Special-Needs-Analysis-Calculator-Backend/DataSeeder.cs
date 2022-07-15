@@ -31,7 +31,10 @@ namespace Special_Needs_Analysis_Calculator.Data
                 LastName = "Rowe",
                 Address = "108 Blane Street",
                 StateOfResidence = "Missouri",
-                Expenses = new ExpensesModel(1500)
+                ConditionStatus = new ConditionStatusModel(true,true,true,true),
+                Eligibility = new EligibilityModel(true,true,true),
+                Expenses = new ExpensesModel(1500),
+                ContactInfo = new ContactInfoModel("Iris@gmail.com","298-639-9285","298-798-7578")
             };
 
             UserDocument newUser2 = new UserDocument();
@@ -41,17 +44,23 @@ namespace Special_Needs_Analysis_Calculator.Data
                 LastName = "Bower",
                 Address = "420 Tax Street",
                 StateOfResidence = "Illinois",
-                Expenses = new ExpensesModel(2000)
+                ConditionStatus = new ConditionStatusModel(false, false, false, false),
+                Eligibility = new EligibilityModel(false, false, false),
+                Expenses = new ExpensesModel(2000),
+                ContactInfo = new ContactInfoModel("Torren@gmail.com", "366-462-9431", "366-823-9554")
             };
 
             UserDocument newUser3 = new UserDocument();
             newUser3.User = new UserModel
             {
-                FirstName = "Uly",
+                FirstName = "Tree",
                 LastName = "Roots",
                 Address = "123 Stop Light Street",
                 StateOfResidence = "Virginia",
-                Expenses = new ExpensesModel(2000)
+                ConditionStatus = new ConditionStatusModel(false, false, true, true),
+                Eligibility = new EligibilityModel(false, false, true),
+                Expenses = new ExpensesModel(2500),
+                ContactInfo = new ContactInfoModel("Trees@gmail.com", "465-823-9554")
             };
 
             context.Users.Add(newUser1);

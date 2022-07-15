@@ -12,5 +12,13 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.Person.Info
         public bool IsLegallyBlind { get; set; }
         public bool IsAbleGroceryShop { get; set; }
         public bool IsAbleDrive { get; set; }
+
+        public ConditionStatusModel (bool isConditionPermanent, bool isLegallyBlind, bool isAbleGroceryShop, bool isAbleDrive)
+        {
+            this.IsConditionPermanent = isConditionPermanent;
+            this.IsLegallyBlind = isLegallyBlind;
+            this.IsAbleGroceryShop = isAbleGroceryShop;
+            this.IsAbleDrive = isAbleDrive;
+        }
     }
 }

@@ -9,8 +9,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.People
 {
     public class UserModel : PersonModel
     {
-        public List<string> Dependents { get; set; }
-        public ContactInfoModel ContactInfo { get; set; }
-        public string Email { get; set; }
+        public List<string>? Dependents { get; set; }       // not everyone has dependents 
+        public ContactInfoModel ContactInfo { get; set; }  
     }
 }
