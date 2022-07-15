@@ -22,25 +22,16 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             return "From Special Needs Analysis Controller Index.";
         }
 
-        [HttpPost("CreateUser")]
-        public async Task<bool> CreateUser(UserModel userInfo)
+        [HttpPost("AddUser")]
+        public async Task<bool> AddUser(UserModel userInfo)
         {
-            return user.AddUser(userInfo);
-            /*if (!ModelState.IsValid) return false;
-            try
-            {
-                UserDocument userDocument = new UserDocument();
-                userDocument.User = userInfo;
-                context.Users.Add(userDocument);
-                await context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return false;
-            }*/
+            return await user.AddUser(userInfo);
         }
 
+        [HttpPost("FindUser")]
+        public async Task<UserDocument> FindUser(int Id)
+        {
+            return await user.FindUser(Id);
+        }
     }
 }
