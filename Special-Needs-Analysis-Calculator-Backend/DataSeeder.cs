@@ -1,4 +1,6 @@
 ﻿using Special_Needs_Analysis_Calculator.Data.Database;
+using Special_Needs_Analysis_Calculator.Data.Models.People;
+using Special_Needs_Analysis_Calculator.Data.Models.Person.Info;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +29,12 @@ namespace Special_Needs_Analysis_Calculator.Data
             {
                 FirstName = "Iris",
                 LastName = "Rowe",
-                Email = "irowe2@gmail.com"
+                Address = "108 Blane Street",
+                StateOfResidence = "Missouri",
+                ConditionStatus = new ConditionStatusModel(true,true,true,true),
+                Eligibility = new EligibilityModel(true,true,true),
+                Expenses = new ExpensesModel(1500),
+                ContactInfo = new ContactInfoModel("Iris@gmail.com","298-639-9285","298-798-7578")
             };
 
             UserDocument newUser2 = new UserDocument();
@@ -35,15 +42,25 @@ namespace Special_Needs_Analysis_Calculator.Data
             {
                 FirstName = "Torren",
                 LastName = "Bower",
-                Email = "tbower@gmail.com"
+                Address = "420 Tax Street",
+                StateOfResidence = "Illinois",
+                ConditionStatus = new ConditionStatusModel(false, false, false, false),
+                Eligibility = new EligibilityModel(false, false, false),
+                Expenses = new ExpensesModel(2000),
+                ContactInfo = new ContactInfoModel("Torren@gmail.com", "366-462-9431", "366-823-9554")
             };
 
             UserDocument newUser3 = new UserDocument();
             newUser3.User = new UserModel
             {
-                FirstName = "Uly",
+                FirstName = "Tree",
                 LastName = "Roots",
-                Email = "uroots55@gmail.com"
+                Address = "123 Stop Light Street",
+                StateOfResidence = "Virginia",
+                ConditionStatus = new ConditionStatusModel(false, false, true, true),
+                Eligibility = new EligibilityModel(false, false, true),
+                Expenses = new ExpensesModel(2500),
+                ContactInfo = new ContactInfoModel("Trees@gmail.com", "465-823-9554")
             };
 
             context.Users.Add(newUser1);
