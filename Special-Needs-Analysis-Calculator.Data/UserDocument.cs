@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Special_Needs_Analysis_Calculator.Data.Models.People;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,5 @@ namespace Special_Needs_Analysis_Calculator.Data
     {
         public int Id { get; set; }
         public UserModel User { get; set; }
-    }
+    } 
 }

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Special_Needs_Analysis_Calculator.Data;
+using Special_Needs_Analysis_Calculator.Data.Database;
+using Special_Needs_Analysis_Calculator.Data.Models.People;
 
 namespace Special_Needs_Analysis_Calculator_Backend.Controllers
 {
