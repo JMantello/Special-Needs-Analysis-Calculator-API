@@ -1,17 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Special_Needs_Analysis_Calculator.Data.Models.People;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Special_Needs_Analysis_Calculator.Data
+namespace Special_Needs_Analysis_Calculator.Data.Database
 {
     public class UserDB : DbContext
     {
         private SpecialNeedsAnalysisDbContext context;
 
-        public UserDB (SpecialNeedsAnalysisDbContext context)
+        public UserDB(SpecialNeedsAnalysisDbContext context)
         {
             this.context = context;
         }
@@ -21,7 +22,7 @@ namespace Special_Needs_Analysis_Calculator.Data
             UserDocument userDocument = new UserDocument();
             userDocument.User = userInfo;
             context.Users.Add(userDocument);
-           
+
             context.SaveChanges();
             return true;
         }
@@ -34,5 +35,5 @@ namespace Special_Needs_Analysis_Calculator.Data
             return user;
         }
     }
-    
+
 }
