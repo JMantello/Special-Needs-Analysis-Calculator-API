@@ -22,10 +22,10 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         }
 
         [HttpPost("CreateUser")]
-        public async Task<bool> CreateUser(UserModel userInfo)
+        public async Task<bool> CreateUser(UserModel userModel)
         {
             if (!ModelState.IsValid) return false;
-            return await context.CreateUser(userInfo);
+            return await context.CreateUser(userModel);
         }
 
     }

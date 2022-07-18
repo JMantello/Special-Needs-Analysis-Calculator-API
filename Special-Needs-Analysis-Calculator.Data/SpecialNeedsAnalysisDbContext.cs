@@ -15,11 +15,11 @@ namespace Special_Needs_Analysis_Calculator.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserModel>()
-                .Property(u => new { u.FirstName, u.LastName, u.Email } )
+            modelBuilder.Entity<UserDocument>()
+                .Property(u => u.User )
                 .HasColumnType("jsonb");
         }
 
-        public DbSet<UserModel> Users { get; set; }
+        public DbSet<UserDocument> Users { get; set; }
     }
 }

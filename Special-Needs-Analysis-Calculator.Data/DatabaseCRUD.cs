@@ -24,7 +24,7 @@ namespace Special_Needs_Analysis_Calculator.Data
         {
             try
             {
-                context.Users.Add(userInfo);
+                context.Users.Add(new UserDocument(userInfo));
                 await context.SaveChangesAsync();
                 return true;
             }

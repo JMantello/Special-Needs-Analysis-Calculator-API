@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace Special_Needs_Analysis_Calculator.Data
 {
-    public class DocumentAttribute : Attribute
-    {
-        public int Id { get; set; }
-        public DocumentAttribute()
-        {
-        }
-    }
 
-    [Document]
     public class UserModel
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
 
+        public UserModel() { }
+
+        public UserModel(string firstName, string lastName, string email)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            Email = email;
+        }
     }
 }
