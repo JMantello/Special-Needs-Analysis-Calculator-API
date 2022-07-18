@@ -24,17 +24,14 @@ namespace Special_Needs_Analysis_Calculator.Data.Migrations
 
             modelBuilder.Entity("Special_Needs_Analysis_Calculator.Data.UserDocument", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<UserDocument>("User")
+                    b.Property<UserModel>("User")
                         .IsRequired()
                         .HasColumnType("jsonb");
 
-                    b.HasKey("Id");
+                    b.HasKey("Email");
 
                     b.ToTable("Users");
                 });
