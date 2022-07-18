@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Special_Needs_Analysis_Calculator.Data
+namespace Special_Needs_Analysis_Calculator.Data.Database
 {
     public interface IDatabaseCrud
     {
@@ -14,7 +14,7 @@ namespace Special_Needs_Analysis_Calculator.Data
     public class DatabaseCrud : IDatabaseCrud
     {
         private readonly SpecialNeedsAnalysisDbContext context;
-        
+
         public DatabaseCrud(SpecialNeedsAnalysisDbContext context)
         {
             this.context = context;
@@ -35,6 +35,10 @@ namespace Special_Needs_Analysis_Calculator.Data
             }
         }
 
+        public async Task<UserModel> Login(string email, string password)
+        {
 
+            return null;
+        }
     }
 }

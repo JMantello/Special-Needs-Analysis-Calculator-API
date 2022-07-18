@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Special_Needs_Analysis_Calculator.Data
+namespace Special_Needs_Analysis_Calculator.Data.Database
 {
     public static class DataSeeder
     {
@@ -29,5 +29,6 @@ namespace Special_Needs_Analysis_Calculator.Data
 
             context.SaveChanges();
         }
+
     }
 }

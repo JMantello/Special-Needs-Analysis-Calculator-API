@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Special_Needs_Analysis_Calculator.Data;
+using Special_Needs_Analysis_Calculator.Data.Database;
 
 namespace Special_Needs_Analysis_Calculator_Backend.Controllers
 {
@@ -8,7 +9,6 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
     public class SpecialNeedsAnalysisController : Controller
     {
         private readonly IDatabaseCrud context;
-
 
         public SpecialNeedsAnalysisController(IDatabaseCrud context)
         {
@@ -28,5 +28,20 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             return await context.CreateUser(userModel);
         }
 
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(string email, string password)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+            return await context.Login(email, password);
+        }
+
+        [HttpGet("Dashboard")]
+        public async Task<string> Dashboard(string sessionId)
+        {
+            if (!ModelState.IsValid) return "";
+            return await context.Login(email, password);
+
+
+        }
     }
-}
