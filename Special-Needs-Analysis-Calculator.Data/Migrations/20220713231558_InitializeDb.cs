@@ -16,7 +16,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    User = table.Column<UserModel>(type: "jsonb", nullable: false)
+                    User = table.Column<UserDocument>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {

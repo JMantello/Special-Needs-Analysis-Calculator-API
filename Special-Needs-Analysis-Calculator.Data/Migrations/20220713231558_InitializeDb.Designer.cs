@@ -32,7 +32,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<UserModel>("User")
+                    b.Property<UserDocument>("User")
                         .IsRequired()
                         .HasColumnType("jsonb");
 

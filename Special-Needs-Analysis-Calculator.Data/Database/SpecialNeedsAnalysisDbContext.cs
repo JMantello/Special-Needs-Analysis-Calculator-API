@@ -16,7 +16,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserDocument>()
-                .Property(d => d.User)
+                .Property(u => u.User )
                 .HasColumnType("jsonb");
         }
 

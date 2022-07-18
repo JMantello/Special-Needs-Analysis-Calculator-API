@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Special_Needs_Analysis_Calculator.Data;
-using Special_Needs_Analysis_Calculator.Data.Database;
-using Special_Needs_Analysis_Calculator.Data.Models.People;
 
 namespace Special_Needs_Analysis_Calculator_Backend.Controllers
 {
@@ -9,13 +7,12 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
     [Route("[controller]")]
     public class SpecialNeedsAnalysisController : Controller
     {
-        private readonly SpecialNeedsAnalysisDbContext context;
-        private readonly UserDB user;
+        private readonly IDatabaseCrud context;
 
-        public SpecialNeedsAnalysisController(SpecialNeedsAnalysisDbContext context)
+
+        public SpecialNeedsAnalysisController(IDatabaseCrud context)
         {
             this.context = context;
-            this.user = new UserDB(context);
         }
 
         [HttpGet]
@@ -24,16 +21,12 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             return "From Special Needs Analysis Controller Index.";
         }
 
-        [HttpPost("AddUser")]
-        public async Task<bool> AddUser(UserModel userInfo)
+        [HttpPost("CreateUser")]
+        public async Task<bool> CreateUser(UserModel userModel)
         {
-            return await user.AddUser(userInfo);
+            if (!ModelState.IsValid) return false;
+            return await context.CreateUser(userModel);
         }
 
-        [HttpPost("FindUser")]
-        public async Task<UserDocument> FindUser(int Id)
-        {
-            return await user.FindUser(Id);
-        }
     }
 }
