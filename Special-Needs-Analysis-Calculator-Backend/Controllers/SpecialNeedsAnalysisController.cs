@@ -7,9 +7,10 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
     [Route("[controller]")]
     public class SpecialNeedsAnalysisController : Controller
     {
-        private readonly SpecialNeedsAnalysisDbContext context;
+        private readonly IDatabaseCrud context;
 
-        public SpecialNeedsAnalysisController(SpecialNeedsAnalysisDbContext context)
+
+        public SpecialNeedsAnalysisController(IDatabaseCrud context)
         {
             this.context = context;
         }
@@ -24,19 +25,7 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         public async Task<bool> CreateUser(UserModel userInfo)
         {
             if (!ModelState.IsValid) return false;
-            try
-            {
-                UserDocument userDocument = new UserDocument();
-                userDocument.User = userInfo;
-                context.Users.Add(userDocument);
-                await context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return false;
-            }
+            return await context.CreateUser(userInfo);
         }
 
     }
