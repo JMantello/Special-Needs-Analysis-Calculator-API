@@ -16,8 +16,8 @@ namespace Special_Needs_Analysis_Calculator.Data.Models
         public string StateOfResidence { get; set; }
 
         // advanced info
-        public ConditionStatusModel ConditionStatus { get; set; } 
+        public ConditionStatusModel? ConditionStatus { get; set; } 
         public EligibilityModel? Eligibility { get; set; }      // eligabilty might not be know on creation
-        public ExpensesModel Expenses { get; set; }
+        public ExpensesModel? Expenses { get; set; }
     }
 }

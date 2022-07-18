@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Special_Needs_Analysis_Calculator.Data.Models.People
 {
-    public class Dependent : PersonModel
+    public class DependentModel : PersonModel
     {
         public bool IsStudent { get; set; }
     }
