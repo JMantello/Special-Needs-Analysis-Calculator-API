@@ -67,6 +67,16 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         }
 
         // Add Dependant
+        [HttpPost("AddDependent")]
+        public async Task<IActionResult> AddDependent(string guardianEmail, DependentModel dependentModel)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            bool success = await context.AddDependant(guardianEmail, dependentModel);
+
+            if (success) return Ok();
+            else return BadRequest();
+        }
 
         // Login
 

@@ -11,14 +11,12 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.People
     public class UserModel : PersonModel
     {
         public List<DependentModel>? Dependents { get; set; }
+        public ContactInfoModel ContactInfo { get; set; }
         public bool IsActive { get; set; }
 
         public UserModel()
         {
             IsActive = true;
         }
-
-
-
     }
 }

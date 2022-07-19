@@ -18,7 +18,7 @@ namespace Special_Needs_Analysis_Calculator.Data
 
         public UserDocument(UserModel userModel)
         {
-            Email = userModel.Email;
+            Email = userModel.ContactInfo.Email;
             User = userModel;
         }
     }

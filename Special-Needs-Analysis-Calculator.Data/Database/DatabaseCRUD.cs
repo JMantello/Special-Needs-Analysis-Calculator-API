@@ -13,6 +13,8 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         public Task<UserDocument> FindUser(string email);
         public Task<bool> UpdateUser(UserModel userInfo);
         public Task<bool> DeleteUser(string email);
+        public Task<bool> AddDependant(string guardianEmail, DependentModel dependant);
+
     }
 
     // Singleton
@@ -49,7 +51,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         {
             try
             {
-                UserDocument userDocument = await FindUser(userInfo.Email);
+                UserDocument userDocument = await FindUser(userInfo.ContactInfo.Email);
                 userDocument.User = userInfo;
                 context.Users.Update(userDocument);
                 context.SaveChanges();
@@ -75,6 +77,19 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
                 Console.WriteLine(e.Message);
                 return false;
             }
+        }
+
+        public async Task<bool> AddDependant(string guardianEmail, DependentModel dependant)
+        {
+            UserDocument userDocument = await FindUser(guardianEmail);
+            if (userDocument == null) return false;
+            
+            if(userDocument.User.Dependents == null)
+                userDocument.User.Dependents = new List<DependentModel>();
+            
+            userDocument.User.Dependents.Add(dependant);
+
+            return await UpdateUser(userDocument.User);
         }
     }
 }
