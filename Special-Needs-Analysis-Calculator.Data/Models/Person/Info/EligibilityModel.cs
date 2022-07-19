@@ -8,7 +8,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.Person.Info
 {
     public class EligibilityModel
     {
-        public bool AllowedSocialSecurityDisabilityInsurance { get; set; }       // long name not sure what to change to
+        public bool AllowedSocialSecurityDisabilityInsurance { get; set; }
         public bool AllowedSupplimentalSecurityIncome { get; set; }
         public bool AllowedMedicaid { get; set; }
 

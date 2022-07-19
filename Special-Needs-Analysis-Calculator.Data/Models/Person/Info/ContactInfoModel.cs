@@ -10,7 +10,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.Person.Info
     {
         public string Email { get; set; }
         public string PrimaryPhoneNumber { get; set; }
-        public string? SecondaryPhoneNumber { get; set; }       // don't require secondary
+        public string? SecondaryPhoneNumber { get; set; }
 
         public ContactInfoModel()
         {

@@ -25,17 +25,60 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         }
 
         [HttpPost("CreateUser")]
-        public async Task<bool> CreateUser(UserModel userModel)
+        public async Task<IActionResult> CreateUser(UserModel userModel)
         {
-            if (!ModelState.IsValid) return false;
-            return await context.CreateUser(userModel);
+            if (!ModelState.IsValid) return BadRequest();
+
+            bool success = await context.CreateUser(userModel);
+
+            if(success) return Ok(userModel);
+            else return BadRequest();
         }
 
         [HttpPost("FindUser")]
         public async Task<UserDocument> FindUser(string Email)
         {
-            return await context.FindUser(Email);
+            UserDocument userDocument = await context.FindUser(Email);
+            if (userDocument.User.IsActive == false) return null;
+            return userDocument;
         }
+
+        [HttpPost("UpdateUser")]
+        public async Task<IActionResult> UpdateUser(UserModel userModel)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            bool success = await context.UpdateUser(userModel);
+
+            if (success) return Ok(userModel);
+            else return BadRequest();
+        }
+
+        // Delete User
+        [HttpPost("DeleteUser")]
+        public async Task<IActionResult> DeleteUser(string email)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            bool success = await context.DeleteUser(email);
+
+            if (success) return Ok();
+            else return BadRequest();
+        }
+
+        // Add Dependant
+        [HttpPost("AddDependent")]
+        public async Task<IActionResult> AddDependent(string guardianEmail, DependentModel dependentModel)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            bool success = await context.AddDependant(guardianEmail, dependentModel);
+
+            if (success) return Ok();
+            else return BadRequest();
+        }
+
+        // Login
 
         [HttpGet("Dashboard")]
         public async Task<IActionResult> Dashboard(string sessionId)
@@ -43,7 +86,5 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             if (!ModelState.IsValid) return BadRequest();
             return NotFound();
         }
-        
-        // Add a fancy comment
     }
 }
