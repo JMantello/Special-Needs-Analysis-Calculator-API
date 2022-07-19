@@ -38,7 +38,9 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         [HttpPost("FindUser")]
         public async Task<UserDocument> FindUser(string Email)
         {
-            return await context.FindUser(Email);
+            UserDocument userDocument = await context.FindUser(Email);
+            if (userDocument.User.IsActive == false) return null;
+            return userDocument;
         }
 
         [HttpPost("UpdateUser")]
@@ -52,7 +54,21 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             else return BadRequest();
         }
 
-        // login
+        // Delete User
+        [HttpPost("DeleteUser")]
+        public async Task<IActionResult> DeleteUser(string email)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            bool success = await context.DeleteUser(email);
+
+            if (success) return Ok();
+            else return BadRequest();
+        }
+
+        // Add Dependant
+
+        // Login
 
         [HttpGet("Dashboard")]
         public async Task<IActionResult> Dashboard(string sessionId)

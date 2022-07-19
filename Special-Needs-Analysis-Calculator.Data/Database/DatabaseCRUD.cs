@@ -12,6 +12,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         public Task<bool> CreateUser(UserModel userInfo);
         public Task<UserDocument> FindUser(string email);
         public Task<bool> UpdateUser(UserModel userInfo);
+        public Task<bool> DeleteUser(string email);
     }
 
     // Singleton
@@ -55,6 +56,21 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
                 return true;
             } 
             catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteUser(string email)
+        {
+            try
+            {
+                UserDocument userDocument = await FindUser(email);
+                userDocument.User.IsActive = false;
+                return await UpdateUser(userDocument.User);
+            }
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
                 return false;
