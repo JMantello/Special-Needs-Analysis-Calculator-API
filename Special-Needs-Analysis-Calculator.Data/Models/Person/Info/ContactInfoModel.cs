@@ -12,18 +12,25 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.Person.Info
         public string PrimaryPhoneNumber { get; set; }
         public string? SecondaryPhoneNumber { get; set; }       // don't require secondary
 
-        public ContactInfoModel (string Email, string PrimaryPhoneNumber, string? SecondaryPhoneNumber)
+        public ContactInfoModel()
+        {
+
+        }
+
+        // constructor overide
+        public ContactInfoModel(string Email, string PrimaryPhoneNumber)
+        {
+            this.Email = Email;
+            this.PrimaryPhoneNumber = PrimaryPhoneNumber;
+        }
+
+        // constructor overide
+        public ContactInfoModel(string Email, string PrimaryPhoneNumber, string? SecondaryPhoneNumber)
         {
             this.Email = Email;
             this.PrimaryPhoneNumber = PrimaryPhoneNumber;
             this.SecondaryPhoneNumber = SecondaryPhoneNumber;
         }
-
-        // constructor overide
-        public ContactInfoModel (string Email, string PrimaryPhoneNumber)
-        {
-            this.Email = Email;
-            this.PrimaryPhoneNumber = PrimaryPhoneNumber;
-        }
+        
     }
 }
