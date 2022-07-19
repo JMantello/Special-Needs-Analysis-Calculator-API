@@ -33,15 +33,16 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         public async Task<IActionResult> Login(string email, string password)
         {
             if (!ModelState.IsValid) return BadRequest();
-            return await context.Login(email, password);
+            return NotFound();
         }
 
         [HttpGet("Dashboard")]
-        public async Task<string> Dashboard(string sessionId)
+        public async Task<IActionResult> Dashboard(string sessionId)
         {
-            if (!ModelState.IsValid) return "";
-            return await context.Login(email, password);
+            if (!ModelState.IsValid) return BadRequest();
+            return NotFound();
 
 
         }
     }
+}
