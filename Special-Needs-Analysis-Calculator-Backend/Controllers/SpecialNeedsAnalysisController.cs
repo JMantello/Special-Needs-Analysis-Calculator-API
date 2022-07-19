@@ -25,10 +25,14 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         }
 
         [HttpPost("CreateUser")]
-        public async Task<bool> CreateUser(UserModel userModel)
+        public async Task<IActionResult> CreateUser(UserModel userModel)
         {
-            if (!ModelState.IsValid) return false;
-            return await context.CreateUser(userModel);
+            if (!ModelState.IsValid) return BadRequest();
+
+            bool success = await context.CreateUser(userModel);
+
+            if(success) return Ok(userModel);
+            else return BadRequest();
         }
 
         [HttpPost("FindUser")]

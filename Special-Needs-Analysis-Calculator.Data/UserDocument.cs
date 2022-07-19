@@ -13,5 +13,11 @@ namespace Special_Needs_Analysis_Calculator.Data
         [Key]
         public string Email { get; set; }
         public UserModel User { get; set; }
+
+        public UserDocument(UserModel userModel)
+        {
+            Email = userModel.ContactInfo.Email;
+            User = userModel;
+        }
     }
 }

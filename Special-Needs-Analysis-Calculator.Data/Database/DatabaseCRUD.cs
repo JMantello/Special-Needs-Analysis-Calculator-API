@@ -27,11 +27,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         {
             try
             {
-                UserDocument userDocument = new UserDocument();
-                userDocument.User = userInfo;
-                userDocument.Email = userInfo.ContactInfo.Email;
-                context.Users.Add(userDocument);
-                
+                context.Users.Add(new UserDocument(userInfo));
                 context.SaveChanges();
                 return true;
             }
