@@ -9,7 +9,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.People
 {
     public class UserModel : PersonModel
     {
-        public List<Dependent>? Dependents { get; set; }       // not everyone has dependents 
+        public List<DependentModel>? Dependents { get; set; }       // not everyone has dependents 
         public ContactInfoModel ContactInfo { get; set; }  
     }
 }

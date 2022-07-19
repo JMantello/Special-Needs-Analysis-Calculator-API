@@ -13,6 +13,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         public Task<UserDocument> FindUser(string Email);
     }
 
+    // Singleton
     public class DatabaseCrud : IDatabaseCrud
     {
         private readonly SpecialNeedsAnalysisDbContext context;
