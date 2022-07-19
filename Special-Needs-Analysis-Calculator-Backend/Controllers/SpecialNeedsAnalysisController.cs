@@ -47,7 +47,5 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             if (!ModelState.IsValid) return BadRequest();
             return NotFound();
         }
-        
-        // Add a fancy comment
     }
 }
