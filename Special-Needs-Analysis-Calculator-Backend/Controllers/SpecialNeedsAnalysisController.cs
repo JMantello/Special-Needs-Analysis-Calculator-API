@@ -33,7 +33,21 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         [HttpPost("FindUser")]
         public async Task<UserDocument> FindUser(string Email)
         {
+<<<<<<< HEAD
             return await context.FindUser(Email);
+=======
+            if (!ModelState.IsValid) return BadRequest();
+            return NotFound();
+        }
+
+        [HttpGet("Dashboard")]
+        public async Task<IActionResult> Dashboard(string sessionId)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+            return NotFound();
+
+
+>>>>>>> 73d4a67 (Update Controller)
         }
     }
 }
