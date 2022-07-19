@@ -47,5 +47,6 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             return context.Users.Find(Email);
         }
 
+
     }
 }

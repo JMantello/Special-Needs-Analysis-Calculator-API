@@ -5,7 +5,7 @@ using Special_Needs_Analysis_Calculator.Data.Models.People;
 
 namespace Special_Needs_Analysis_Calculator_Backend.Controllers
 {
-    // Facade 
+    // Facade structure 
     [ApiController]
     [Route("[controller]")]
     public class SpecialNeedsAnalysisController : Controller
