@@ -41,6 +41,19 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             return await context.FindUser(Email);
         }
 
+        [HttpPost("UpdateUser")]
+        public async Task<IActionResult> UpdateUser(UserModel userModel)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            bool success = await context.UpdateUser(userModel);
+
+            if (success) return Ok(userModel);
+            else return BadRequest();
+        }
+
+        // login
+
         [HttpGet("Dashboard")]
         public async Task<IActionResult> Dashboard(string sessionId)
         {

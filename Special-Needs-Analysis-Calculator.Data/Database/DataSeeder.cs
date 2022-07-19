@@ -32,10 +32,12 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
                 LastName = "Rowe",
                 Address = "108 Blane Street",
                 StateOfResidence = "Missouri",
+                Email = "Iris@gmail.com",
+                PrimaryPhoneNumber = "298-639-9285",
+                SecondaryPhoneNumber = "298-798-7578",
                 ConditionStatus = new ConditionStatusModel(true, true, true, true),
                 Eligibility = new EligibilityModel(true, true, true),
                 Expenses = new ExpensesModel(1500),
-                ContactInfo = new ContactInfoModel("Iris@gmail.com", "298-639-9285", "298-798-7578")
             }));
 
             context.Add(new UserDocument(new UserModel
@@ -44,10 +46,12 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
                 LastName = "Bower",
                 Address = "420 Tax Street",
                 StateOfResidence = "Illinois",
+                Email = "Torren@gmail.com",
+                PrimaryPhoneNumber = "366-462-9431",
+                SecondaryPhoneNumber = "366-823-9554",
                 ConditionStatus = new ConditionStatusModel(false, false, false, false),
                 Eligibility = new EligibilityModel(false, false, false),
                 Expenses = new ExpensesModel(2000),
-                ContactInfo = new ContactInfoModel("Torren@gmail.com", "366-462-9431", "366-823-9554")
             }));
 
             context.Add(new UserDocument(new UserModel
@@ -56,10 +60,11 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
                 LastName = "Roots",
                 Address = "123 Stop Light Street",
                 StateOfResidence = "Virginia",
+                Email = "Trees@gmail.com",
+                PrimaryPhoneNumber = "465-823-9554",
                 ConditionStatus = new ConditionStatusModel(false, false, true, true),
                 Eligibility = new EligibilityModel(false, false, true),
                 Expenses = new ExpensesModel(2500),
-                ContactInfo = new ContactInfoModel("Trees@gmail.com", "465-823-9554")
             }));
 
             context.SaveChanges();

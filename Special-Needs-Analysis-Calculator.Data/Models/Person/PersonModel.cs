@@ -14,10 +14,13 @@ namespace Special_Needs_Analysis_Calculator.Data.Models
         public string LastName { get; set; }
         public string Address { get; set; }
         public string StateOfResidence { get; set; }
+        public string Email { get; set; }
+        public string PrimaryPhoneNumber { get; set; }
+        public string? SecondaryPhoneNumber { get; set; }
 
         // advanced info
         public ConditionStatusModel? ConditionStatus { get; set; } 
-        public EligibilityModel? Eligibility { get; set; }      // eligabilty might not be know on creation
+        public EligibilityModel? Eligibility { get; set; }
         public ExpensesModel? Expenses { get; set; }
     }
 }
