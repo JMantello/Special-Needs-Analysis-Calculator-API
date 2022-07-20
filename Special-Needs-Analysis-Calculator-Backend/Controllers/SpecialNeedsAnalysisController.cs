@@ -67,18 +67,27 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         }
 
         // Add Dependant
-        [HttpPost("AddDependent")]
-        public async Task<IActionResult> AddDependent(string guardianEmail, BeneficiaryModel dependentModel)
+        [HttpPost("AddBeneficiary")]
+        public async Task<IActionResult> AddBeneficiary(string email, BeneficiaryModel beneficiaryModel)
         {
             if (!ModelState.IsValid) return BadRequest();
 
-            bool success = await context.AddDependant(guardianEmail, dependentModel);
+            bool success = await context.AddBeneficiary(email, beneficiaryModel);
 
             if (success) return Ok();
             else return BadRequest();
         }
 
         // Login
+        [HttpGet("Login")]
+        public async Task<IActionResult> Login(string email, string password)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+            
+            string? sessionId = await context.Login(email, password);
+            if (sessionId == null) return NotFound();
+            return Ok(sessionId);
+        }
 
         [HttpGet("Dashboard")]
         public async Task<IActionResult> Dashboard(string sessionId)
