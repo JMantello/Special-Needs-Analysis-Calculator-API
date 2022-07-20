@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Special_Needs_Analysis_Calculator.Data;
 using Special_Needs_Analysis_Calculator.Data.Database;
+using Special_Needs_Analysis_Calculator.Data.Database.Login_System;
 using Special_Needs_Analysis_Calculator.Data.Models.People;
 
 namespace Special_Needs_Analysis_Calculator_Backend.Controllers
@@ -11,7 +12,6 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
     public class SpecialNeedsAnalysisController : Controller
     {
         private readonly IDatabaseCrud context;
-
 
         public SpecialNeedsAnalysisController(IDatabaseCrud context)
         {
@@ -79,6 +79,13 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         }
 
         // Login
+        [HttpPost("LoginUser")]
+        public async Task<IActionResult> LoginUser(string Password, string Email)
+        {
+            var status = await LoginModel.CheckCredentials(Password, Email);
+            if (status) return Ok();
+            else return Unauthorized();
+        }
 
         [HttpGet("Dashboard")]
         public async Task<IActionResult> Dashboard(string sessionId)
