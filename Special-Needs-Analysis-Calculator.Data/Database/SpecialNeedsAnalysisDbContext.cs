@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Special_Needs_Analysis_Calculator.Data.Models.Login;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,6 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         }
 
         public DbSet<UserDocument> Users { get; set; }
-
+        public DbSet<UserLogin> UserLogin { get; set; }
     }
 }

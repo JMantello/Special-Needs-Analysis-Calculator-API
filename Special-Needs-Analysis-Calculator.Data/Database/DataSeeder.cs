@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Special_Needs_Analysis_Calculator.Data.Database;
+using Special_Needs_Analysis_Calculator.Data.Models.Login;
 using Special_Needs_Analysis_Calculator.Data.Models.People;
 using Special_Needs_Analysis_Calculator.Data.Models.Person.Info;
 using System;
@@ -19,6 +20,15 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             using var context = scope.ServiceProvider.GetRequiredService<SpecialNeedsAnalysisDbContext>();
             context.Database.EnsureCreated();
             AddUsers(context);
+            AddUserLogins(context);
+        }
+
+        private static void AddUserLogins(SpecialNeedsAnalysisDbContext context)
+        {
+            context.Add(new UserLogin { Email = "Iris@gmail.com", Password = "fl@324azc" });
+            context.Add(new UserLogin { Email = "Torren@gmail.com", Password = "abcdefg" });
+            context.Add(new UserLogin { Email = "TRoots@gmail.com", Password = "lo52jnm34" });
+            context.SaveChanges();
         }
 
         private static void AddUsers(SpecialNeedsAnalysisDbContext context)
@@ -64,9 +74,9 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             {
                 FirstName = "Tree",
                 LastName = "Roots",
-                Email = "Torren@gmail.com",
-                PrimaryPhoneNumber = "366-462-9431",
-                SecondaryPhoneNumber = "366-823-9554",
+                Email = "TRoots@gmail.com",
+                PrimaryPhoneNumber = "363-432-4541",
+                SecondaryPhoneNumber = "363-224-4325",
             }));
 
             context.SaveChanges();
