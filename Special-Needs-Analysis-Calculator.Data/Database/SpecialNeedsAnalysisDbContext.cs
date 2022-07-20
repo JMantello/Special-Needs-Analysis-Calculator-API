@@ -23,5 +23,6 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 
         public DbSet<UserDocument> Users { get; set; }
         public DbSet<UserLogin> UserLogin { get; set; }
+        public DbSet<SessionTokenModel> Sessions { get; set; }
     }
 }
