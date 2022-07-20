@@ -31,17 +31,9 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 
         public async Task<bool> CreateUser(UserModel userInfo)
         {
-            try
-            {
-                await context.Users.AddAsync(new UserDocument(userInfo));
-                await context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return false;
-            }
+            await context.Users.AddAsync(new UserDocument(userInfo));
+            await context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<UserDocument?> FindUser(string email)
@@ -55,7 +47,8 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             UserDocument? userDocument = await FindUser(userInfo.Email);
             if (userDocument == null) return false;
             userDocument.User = userInfo;
-            await context.SaveChangesAsync();
+            context.Users.Update(userDocument); // I wonder if this step is necessary
+            await context.SaveChangesAsync(); // For if SaveChangesAsync takes care of the update.
             return true;
         }
 
