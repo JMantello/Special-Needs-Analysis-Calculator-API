@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Special_Needs_Analysis_Calculator.Data.Database;
+using Special_Needs_Analysis_Calculator.Data.Models.Login;
 using Special_Needs_Analysis_Calculator.Data.Models.People;
 using Special_Needs_Analysis_Calculator.Data.Models.Person.Info;
 using System;
@@ -19,6 +20,18 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             using var context = scope.ServiceProvider.GetRequiredService<SpecialNeedsAnalysisDbContext>();
             context.Database.EnsureCreated();
             AddUsers(context);
+            AddUserLogins(context);
+        }
+
+        private static void AddUserLogins(SpecialNeedsAnalysisDbContext context)
+        {
+            UserLogin? userLogin = context.UserLogin.FirstOrDefault();
+            if (userLogin != null) return;
+
+            context.Add(new UserLogin { Email = "Iris@gmail.com", Password = "iris" });
+            context.Add(new UserLogin { Email = "Torren@gmail.com", Password = "torren" });
+            context.Add(new UserLogin { Email = "Roots@gmail.com", Password = "roots" });
+            context.SaveChanges();
         }
 
         private static void AddUsers(SpecialNeedsAnalysisDbContext context)
@@ -30,33 +43,42 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             {
                 FirstName = "Iris",
                 LastName = "Rowe",
-                StateOfResidence = "Missouri",
-                ContactInfo = new ContactInfoModel("Iris@gmail.com", "298-639-9285", "298-798-7578"),
-                ConditionStatus = new ConditionStatusModel(true, true, true, true),
-                Eligibility = new EligibilityModel(true, true, true),
-                Expenses = new ExpensesModel(1500),
+                Email = "Iris@gmail.com",
+                PrimaryPhoneNumber = "298-639-9285",
+                SecondaryPhoneNumber = "298-798-7578",
+
+                Beneficiaries =
+                new List<BeneficiaryModel> 
+                {
+                    new BeneficiaryModel
+                    {
+                        FirstName = "Cherry",
+                        LastName = "Rowe",
+                        StateOfResidence = "Missouri",
+                        IsStudent = true,
+                        ConditionStatus = new ConditionStatusModel(true, true, true, false),
+                        Eligibility = new EligibilityModel(true, true, true),
+                        Expenses = new ExpensesModel(1500)
+                    }
+                }
+
             }));
 
             context.Add(new UserDocument(new UserModel
             {
                 FirstName = "Torren",
                 LastName = "Bower",
-                StateOfResidence = "Illinois",
-                ContactInfo = new ContactInfoModel("Torren@gmail.com", "366-462-9431", "366-823-9554"),
-                ConditionStatus = new ConditionStatusModel(false, false, false, false),
-                Eligibility = new EligibilityModel(false, false, false),
-                Expenses = new ExpensesModel(2000),
+                Email = "Torren@gmail.com",
+                PrimaryPhoneNumber = "366-462-9431",
+                SecondaryPhoneNumber = "366-823-9554",
             }));
 
             context.Add(new UserDocument(new UserModel
             {
                 FirstName = "Tree",
                 LastName = "Roots",
-                StateOfResidence = "Virginia",
-                ContactInfo = new ContactInfoModel("Trees@gmail.com", "465-823-9554"),
-                ConditionStatus = new ConditionStatusModel(false, false, true, true),
-                Eligibility = new EligibilityModel(false, false, true),
-                Expenses = new ExpensesModel(2500),
+                Email = "Roots@gmail.com",
+                PrimaryPhoneNumber = "465-823-9554"
             }));
 
             context.SaveChanges();

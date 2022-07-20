@@ -1,4 +1,5 @@
-﻿using Special_Needs_Analysis_Calculator.Data.Models.People;
+﻿using Special_Needs_Analysis_Calculator.Data.Models.Login;
+using Special_Needs_Analysis_Calculator.Data.Models.People;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,11 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
     public interface IDatabaseCrud
     {
         public Task<bool> CreateUser(UserModel userInfo);
-        public Task<UserDocument> FindUser(string email);
+        public Task<UserDocument?> FindUser(string email);
         public Task<bool> UpdateUser(UserModel userInfo);
         public Task<bool> DeleteUser(string email);
-        public Task<bool> AddDependant(string guardianEmail, DependentModel dependant);
+        public Task<bool> AddBeneficiary(string email, BeneficiaryModel dependant);
+        public Task<string?> Login(UserLogin userLogin);
 
     }
 
@@ -29,67 +31,66 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 
         public async Task<bool> CreateUser(UserModel userInfo)
         {
-            try
-            {
-                context.Users.Add(new UserDocument(userInfo));
-                context.SaveChanges();
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return false;
-            }
+            await context.Users.AddAsync(new UserDocument(userInfo));
+            await context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task<UserDocument> FindUser(string email)
+        public async Task<UserDocument?> FindUser(string email)
         {
-            return context.Users.Find(email);
+            UserDocument? user = await context.Users.FindAsync(email);
+            return user;
         }
 
         public async Task<bool> UpdateUser(UserModel userInfo)
         {
-            try
-            {
-                UserDocument userDocument = await FindUser(userInfo.ContactInfo.Email);
-                userDocument.User = userInfo;
-                context.Users.Update(userDocument);
-                context.SaveChanges();
-                return true;
-            } 
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return false;
-            }
+            UserDocument? userDocument = await FindUser(userInfo.Email);
+            if (userDocument == null) return false;
+            userDocument.User = userInfo;
+            context.Users.Update(userDocument); // I wonder if this step is necessary
+            await context.SaveChangesAsync(); // For if SaveChangesAsync takes care of the update.
+            return true;
         }
 
         public async Task<bool> DeleteUser(string email)
         {
-            try
-            {
-                UserDocument userDocument = await FindUser(email);
-                userDocument.User.IsActive = false;
-                return await UpdateUser(userDocument.User);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return false;
-            }
+            UserDocument? userDocument = await FindUser(email);
+            if (userDocument == null) return false;
+            userDocument.User.IsAccountActive = false;
+            context.Users.Update(userDocument);
+            await context.SaveChangesAsync();
+            return true;
         }
 
-        public async Task<bool> AddDependant(string guardianEmail, DependentModel dependant)
+        public async Task<bool> AddBeneficiary(string email, BeneficiaryModel dependant)
         {
-            UserDocument userDocument = await FindUser(guardianEmail);
+            UserDocument? userDocument = await FindUser(email);
             if (userDocument == null) return false;
-            
-            if(userDocument.User.Dependents == null)
-                userDocument.User.Dependents = new List<DependentModel>();
-            
-            userDocument.User.Dependents.Add(dependant);
 
-            return await UpdateUser(userDocument.User);
+            if (userDocument.User.Beneficiaries == null)
+                userDocument.User.Beneficiaries = new List<BeneficiaryModel>();
+
+            userDocument.User.Beneficiaries.Add(dependant);
+            context.Users.Update(userDocument);
+
+            await context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<string?> Login(UserLogin userLogin)
+        {
+            UserLogin? validCredentials = context.UserLogin
+                .Where(ul => ul == userLogin)
+                .FirstOrDefault();
+
+            if (validCredentials == null) return null;
+
+            string sessionToken = Guid.NewGuid().ToString();
+
+            await context.Sessions.AddAsync(new SessionTokenModel(userLogin.Email, sessionToken));
+            await context.SaveChangesAsync();
+
+            return sessionToken;
         }
     }
 }

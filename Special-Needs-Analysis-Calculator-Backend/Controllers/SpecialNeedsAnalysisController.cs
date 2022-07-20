@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Special_Needs_Analysis_Calculator.Data;
 using Special_Needs_Analysis_Calculator.Data.Database;
-using Special_Needs_Analysis_Calculator.Data.Database.Login_System;
+using Special_Needs_Analysis_Calculator.Data.Models.Login;
 using Special_Needs_Analysis_Calculator.Data.Models.People;
 
 namespace Special_Needs_Analysis_Calculator_Backend.Controllers
@@ -12,6 +12,7 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
     public class SpecialNeedsAnalysisController : Controller
     {
         private readonly IDatabaseCrud context;
+
 
         public SpecialNeedsAnalysisController(IDatabaseCrud context)
         {
@@ -35,13 +36,13 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             else return BadRequest();
         }
 
-        [HttpPost("FindUser")]
-        public async Task<UserDocument> FindUser(string Email)
-        {
-            UserDocument userDocument = await context.FindUser(Email);
-            if (userDocument.User.IsActive == false) return null;
-            return userDocument;
-        }
+        //[HttpPost("FindUser")]
+        //public async Task<UserDocument> FindUser(string Email)
+        //{
+        //    UserDocument userDocument = await context.FindUser(Email);
+        //    if (userDocument.User.IsAccountActive == false) return null;
+        //    return userDocument;
+        //}
 
         [HttpPost("UpdateUser")]
         public async Task<IActionResult> UpdateUser(UserModel userModel)
@@ -66,25 +67,24 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             else return BadRequest();
         }
 
-        // Add Dependant
-        [HttpPost("AddDependent")]
-        public async Task<IActionResult> AddDependent(string guardianEmail, DependentModel dependentModel)
+        [HttpPost("AddBeneficiary")]
+        public async Task<IActionResult> AddBeneficiary(string email, BeneficiaryModel beneficiaryModel)
         {
             if (!ModelState.IsValid) return BadRequest();
 
-            bool success = await context.AddDependant(guardianEmail, dependentModel);
+            bool success = await context.AddBeneficiary(email, beneficiaryModel);
 
             if (success) return Ok();
             else return BadRequest();
         }
 
-        // Login
-        [HttpPost("LoginUser")]
-        public async Task<IActionResult> LoginUser(string Password, string Email)
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(UserLogin userLogin)
         {
-            var status = await LoginModel.CheckCredentials(Password, Email);
-            if (status) return Ok();
-            else return Unauthorized();
+            if (!ModelState.IsValid) return BadRequest();
+            string? sessionId = await context.Login(userLogin);
+            if (sessionId == null) return NotFound();
+            return Ok(sessionId);
         }
 
         [HttpGet("Dashboard")]
