@@ -35,13 +35,13 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             else return BadRequest();
         }
 
-        [HttpPost("FindUser")]
-        public async Task<UserDocument> FindUser(string Email)
-        {
-            UserDocument userDocument = await context.FindUser(Email);
-            if (userDocument.User.IsActive == false) return null;
-            return userDocument;
-        }
+        //[HttpPost("FindUser")]
+        //public async Task<UserDocument> FindUser(string Email)
+        //{
+        //    UserDocument userDocument = await context.FindUser(Email);
+        //    if (userDocument.User.IsAccountActive == false) return null;
+        //    return userDocument;
+        //}
 
         [HttpPost("UpdateUser")]
         public async Task<IActionResult> UpdateUser(UserModel userModel)
@@ -68,7 +68,7 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
 
         // Add Dependant
         [HttpPost("AddDependent")]
-        public async Task<IActionResult> AddDependent(string guardianEmail, DependentModel dependentModel)
+        public async Task<IActionResult> AddDependent(string guardianEmail, BeneficiaryModel dependentModel)
         {
             if (!ModelState.IsValid) return BadRequest();
 
