@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Special_Needs_Analysis_Calculator.Data;
 using Special_Needs_Analysis_Calculator.Data.Database;
+using Special_Needs_Analysis_Calculator.Data.Models.Login;
 using Special_Needs_Analysis_Calculator.Data.Models.People;
 
 namespace Special_Needs_Analysis_Calculator_Backend.Controllers
@@ -66,7 +67,6 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             else return BadRequest();
         }
 
-        // Add Dependant
         [HttpPost("AddBeneficiary")]
         public async Task<IActionResult> AddBeneficiary(string email, BeneficiaryModel beneficiaryModel)
         {
@@ -78,13 +78,11 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             else return BadRequest();
         }
 
-        // Login
-        [HttpGet("Login")]
-        public async Task<IActionResult> Login(string email, string password)
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(UserLogin userLogin)
         {
             if (!ModelState.IsValid) return BadRequest();
-            
-            string? sessionId = await context.Login(email, password);
+            string? sessionId = await context.Login(userLogin);
             if (sessionId == null) return NotFound();
             return Ok(sessionId);
         }

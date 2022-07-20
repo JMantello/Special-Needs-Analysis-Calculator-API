@@ -25,9 +25,12 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 
         private static void AddUserLogins(SpecialNeedsAnalysisDbContext context)
         {
-            context.Add(new UserLogin { Email = "Iris@gmail.com", Password = "fl@324azc" });
-            context.Add(new UserLogin { Email = "Torren@gmail.com", Password = "abcdefg" });
-            context.Add(new UserLogin { Email = "TRoots@gmail.com", Password = "lo52jnm34" });
+            UserLogin? userLogin = context.UserLogin.FirstOrDefault();
+            if (userLogin != null) return;
+
+            context.Add(new UserLogin { Email = "Iris@gmail.com", Password = "iris" });
+            context.Add(new UserLogin { Email = "Torren@gmail.com", Password = "torren" });
+            context.Add(new UserLogin { Email = "Roots@gmail.com", Password = "roots" });
             context.SaveChanges();
         }
 
@@ -74,9 +77,8 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             {
                 FirstName = "Tree",
                 LastName = "Roots",
-                Email = "TRoots@gmail.com",
-                PrimaryPhoneNumber = "363-432-4541",
-                SecondaryPhoneNumber = "363-224-4325",
+                Email = "Roots@gmail.com",
+                PrimaryPhoneNumber = "465-823-9554"
             }));
 
             context.SaveChanges();
