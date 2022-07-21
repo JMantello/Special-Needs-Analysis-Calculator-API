@@ -23,7 +23,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
     }
 
     // Singleton
-    public class DatabaseCrud : IDatabaseCrud
+    public class DatabaseCRUD : IDatabaseCrud
     {
         private readonly SpecialNeedsAnalysisDbContext context;
 
@@ -31,7 +31,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// Constructor that sets up the connection to the database for CRUD operations
         /// </summary>
         /// <param name="context">holds the connection to the database</param>
-        public DatabaseCrud(SpecialNeedsAnalysisDbContext context)
+        public DatabaseCRUD(SpecialNeedsAnalysisDbContext context)
         {
             this.context = context;
         }
