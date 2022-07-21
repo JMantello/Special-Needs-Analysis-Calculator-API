@@ -88,7 +88,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// <param name="email">PK used to associate the User with their own information</param>
         /// <returns>a UserDocument object that holds all the User's info</returns>
 
-        //public async Task<UserDocument?> FindUser(string email)
+        //public async Task<UserDocument?> FindUser(string emai
         //{
         //    UserDocument? user = await context.Users.FindAsync(email);
         //    return user;
