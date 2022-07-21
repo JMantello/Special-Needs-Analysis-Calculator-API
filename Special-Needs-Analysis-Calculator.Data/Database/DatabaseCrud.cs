@@ -1,5 +1,8 @@
-﻿using Special_Needs_Analysis_Calculator.Data.Models.Login;
+﻿using Microsoft.EntityFrameworkCore;
+using Special_Needs_Analysis_Calculator.Data.Models.InputModels;
+using Special_Needs_Analysis_Calculator.Data.Models.Login;
 using Special_Needs_Analysis_Calculator.Data.Models.People;
+using Special_Needs_Analysis_Calculator.Data.Models.Person;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +13,12 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 {
     public interface IDatabaseCrud
     {
-        public Task<bool> CreateUser(UserModel userInfo, string password);
-        public Task<UserDocument?> FindUser(string email);
-        public Task<bool> UpdateUser(UserModel userInfo);
-        public Task<bool> DeleteUser(string email);
-        public Task<bool> AddBeneficiary(string email, BeneficiaryModel dependant);
-        public Task<string?> Login(UserLogin userLogin);
+        public Task<bool> CreateUser(CreateUserModel createUserModel);
+        public Task<UserDocument?> FindUserBySessionToken(string sessionToken);
+        public Task<bool> UpdateUser(UpdateUserModel updateUserModel);
+        public Task<bool> DeleteUser(string sessionToken);
+        public Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel);
+        public Task<string?> Login(UserLogin loginRequest);
 
     }
 
@@ -40,13 +43,16 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// <param name="userInfo">User information fed in by the client</param>
         /// <param name="password">Password associated with the user's email (PK)</param>
         /// <returns>true/false for success or failure of the method</returns>
-        public async Task<bool> CreateUser(UserModel userInfo, string password)
+        public async Task<bool> CreateUser(CreateUserModel createUserModel)
         {
-            var salt = Guid.NewGuid().ToString();
+            await context.Users.AddAsync(new UserDocument(createUserModel.UserModel));
+            
+            string salt = Guid.NewGuid().ToString();
 
-            await context.Users.AddAsync(new UserDocument(userInfo));
-            await context.UserLogin.AddAsync(new UserLogin(userInfo.Email, SHA256Hash.PasswordHash(password, salt), salt));
+            await context.UserLogin.AddAsync(new UserLogin(createUserModel.UserModel.Email, SHA256Hash.PasswordHash(createUserModel.Password, salt), salt));
+            
             await context.SaveChangesAsync();
+            
             return true;
         }
 
@@ -55,11 +61,12 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// </summary>
         /// <param name="email">PK used to associate login information with their login info</param>
         /// <returns>a UserLogin object that holds all DB table info</returns>
-        public async Task<UserLogin?> FindUserLogin(string email)
-        {
-            UserLogin? userLogin = await context.UserLogin.FindAsync(email);
-            return userLogin;
-        }
+
+        //public async Task<UserLogin?> FindUserLogin(string email)
+        //{
+        //    UserLogin? userLogin = await context.UserLogin.FindAsync(email);
+        //    return userLogin;
+        //}
 
         /// <summary>
         /// Queries the sessions table to obtain loggin sessions. This can be
@@ -67,11 +74,12 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// </summary>
         /// <param name="email">PK used to associate login information with their session info</param>
         /// <returns>a SessionTokenModel object that holds all the session table info</returns>
-        public async Task<SessionTokenModel?> FindUserSessions(string email)
-        {
-            SessionTokenModel? userSessions = await context.Sessions.FindAsync(email);
-            return userSessions;
-        }
+
+        //public async Task<SessionTokenModel?> FindUserSessions(string email)
+        //{
+        //    SessionTokenModel? userSessions = await context.Sessions.FindAsync(email);
+        //    return userSessions;
+        //}
 
         /// <summary>
         /// Queries the Users table to obtain information stored about the user. This
@@ -79,25 +87,37 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// </summary>
         /// <param name="email">PK used to associate the User with their own information</param>
         /// <returns>a UserDocument object that holds all the User's info</returns>
-        public async Task<UserDocument?> FindUser(string email)
+
+        //public async Task<UserDocument?> FindUser(string email)
+        //{
+        //    UserDocument? user = await context.Users.FindAsync(email);
+        //    return user;
+        //}
+
+        public async Task<UserDocument?> FindUserBySessionToken(string sessionToken)
         {
-            UserDocument? user = await context.Users.FindAsync(email);
+            SessionTokenModel? session = await context.Sessions
+                .Where(s => s.SessionToken == sessionToken).FirstOrDefaultAsync();
+            
+            if (session == null) return null;
+
+            UserDocument? user = await context.Users.FindAsync(session.Email);
             return user;
         }
 
         /// <summary>
         /// Updates user information inside the User's table
         /// </summary>
-        /// <param name="userInfo">Object that holds all the info about the user will 
+        /// <param name="updateUserModel">Object that holds the session token and all the updated info about the user 
         /// replace old info</param>
-        /// <returns>true/fale success or failure</returns>
-        public async Task<bool> UpdateUser(UserModel userInfo)
+        /// <returns>true/false success or failure</returns>
+        public async Task<bool> UpdateUser(UpdateUserModel updateUserModel)
         {
-            UserDocument? userDocument = await FindUser(userInfo.Email);
+            UserDocument? userDocument = await FindUserBySessionToken(updateUserModel.SessionToken);
             if (userDocument == null) return false;
-            userDocument.User = userInfo;
-            context.Users.Update(userDocument);
-            await context.SaveChangesAsync(); // Save update inside the DB
+            userDocument.User = updateUserModel.UserModel;
+            context.Users.Update(userDocument); // I wonder if this step is necessary
+            await context.SaveChangesAsync(); // For if SaveChangesAsync takes care of the update.
             return true;
         }
 
@@ -106,11 +126,11 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// that lets the frontend know they have deleted their account. This was done to 
         /// ensure easy restoration of user information.
         /// </summary>
-        /// <param name="email">PK to specify which user needs to be deleted in the Users table</param>
+        /// <param name="sessionToken">PK to specify which user needs to be deleted in the Users table</param>
         /// <returns>true/false success or failure</returns>
-        public async Task<bool> DeleteUser(string email)
+        public async Task<bool> DeleteUser(string sessionToken)
         {
-            UserDocument? userDocument = await FindUser(email);
+            UserDocument? userDocument = await FindUserBySessionToken(sessionToken);
             if (userDocument == null) return false;
             userDocument.User.IsAccountActive = false;
             context.Users.Update(userDocument);
@@ -123,47 +143,45 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// create as many dependents as necessary, or even designate themselves
         /// as a benificiary of their own estate.
         /// </summary>
-        /// <param name="email">PK to specifiy which user needs a benificiary in Users table</param>
-        /// <param name="dependant">object that holds information about the benificiary being added</param>
+        /// <param name="addBeneficiaryModel">Everything needed to add a benificiary in Users table</param>
         /// <returns>true/false success or failure</returns>
-        public async Task<bool> AddBeneficiary(string email, BeneficiaryModel dependant)
+        public async Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel)
         {
-            UserDocument? userDocument = await FindUser(email);
+            UserDocument? userDocument = await FindUserBySessionToken(addBeneficiaryModel.SessionToken);
             if (userDocument == null) return false;
 
             if (userDocument.User.Beneficiaries == null)
                 userDocument.User.Beneficiaries = new List<BeneficiaryModel>();
 
-            userDocument.User.Beneficiaries.Add(dependant);
+            userDocument.User.Beneficiaries.Add(addBeneficiaryModel.BeneficiaryModel);
+            
             context.Users.Update(userDocument);
-
             await context.SaveChangesAsync();
             return true;
         }
 
         /// <summary>
-        /// Logs an existing user into the website this is done through
-        /// password authentication then upon success creating a session for
+        /// Logs an existing user into the website. This is done through
+        /// password authentication then upon success creates a session for
         /// that particular user to remain logged in.
         /// </summary>
-        /// <param name="userLogin">object that contains the information necesary to login a user</param>
+        /// <param name="loginRequest">Email and Passsword</param>
         /// <returns>returns a string representing a sessionid or null on faiure</returns>
-        public async Task<string?> Login(UserLogin userLogin)
+        public async Task<string?> Login(UserLogin loginRequest)
         {
-            // get salt from the database
-            var userDocument = await FindUser(userLogin.Email);
-            var userLoginInfo = await FindUserLogin(userLogin.Email);
-            var UserHash = SHA256Hash.PasswordHash(userLogin.Password, userLoginInfo.Salt);
+            UserLogin? attemptedLoginCredential = await context.UserLogin.Where(ul => ul.Email == loginRequest.Email).FirstOrDefaultAsync();
 
-            UserLogin? validCredentials = context.UserLogin
-                .Where(ul => ul.Email == userLogin.Email && ul.Password == UserHash)
-                .FirstOrDefault();
+            if (attemptedLoginCredential == null) return null;
 
-            if (validCredentials == null) return null;
+            string reHashedPassword = SHA256Hash.PasswordHash(loginRequest.Password, attemptedLoginCredential.Salt);
+
+            if(attemptedLoginCredential.Password != reHashedPassword) return null;
 
             string sessionToken = Guid.NewGuid().ToString();
 
-            await context.Sessions.AddAsync(new SessionTokenModel(userLogin.Email, sessionToken));
+            await context.Sessions.AddAsync(
+                new SessionTokenModel(loginRequest.Email, sessionToken));
+
             await context.SaveChangesAsync();
 
             return sessionToken;
