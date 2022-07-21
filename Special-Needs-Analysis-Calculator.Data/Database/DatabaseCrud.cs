@@ -96,7 +96,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             UserDocument? userDocument = await FindUser(userInfo.Email);
             if (userDocument == null) return false;
             userDocument.User = userInfo;
-            context.Users.Update(userDocument); 
+            context.Users.Update(userDocument);
             await context.SaveChangesAsync(); // Save update inside the DB
             return true;
         }
