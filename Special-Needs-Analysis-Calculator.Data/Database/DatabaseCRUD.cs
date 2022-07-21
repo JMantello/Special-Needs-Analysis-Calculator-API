@@ -32,7 +32,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         public async Task<bool> CreateUser(UserModel userInfo, string password)
         {
             await context.Users.AddAsync(new UserDocument(userInfo));
-            await context.UserLogin.AddAsync(new UserLogin(userInfo.Email, SHA256Hash.PasswordHash(password)));
+            await context.UserLogin.AddAsync(new UserLogin(userInfo.Email, SHA256Hash.PasswordHash(password), Guid.NewGuid().ToString()));
             await context.SaveChangesAsync();
             return true;
         }
@@ -96,7 +96,5 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 
             return sessionToken;
         }
-
-
     }
 }

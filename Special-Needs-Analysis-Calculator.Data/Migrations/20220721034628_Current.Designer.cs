@@ -12,8 +12,8 @@ using Special_Needs_Analysis_Calculator.Data.Models.People;
 namespace Special_Needs_Analysis_Calculator.Data.Migrations
 {
     [DbContext(typeof(SpecialNeedsAnalysisDbContext))]
-    [Migration("20220720192321_AddedSessions")]
-    partial class AddedSessions
+    [Migration("20220721034628_Current")]
+    partial class Current
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -44,6 +44,10 @@ namespace Special_Needs_Analysis_Calculator.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Salt")
                         .IsRequired()
                         .HasColumnType("text");
 

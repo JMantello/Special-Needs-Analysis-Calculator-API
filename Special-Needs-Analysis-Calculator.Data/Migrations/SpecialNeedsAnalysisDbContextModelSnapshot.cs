@@ -45,6 +45,10 @@ namespace Special_Needs_Analysis_Calculator.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Email");
 
                     b.ToTable("UserLogin");
