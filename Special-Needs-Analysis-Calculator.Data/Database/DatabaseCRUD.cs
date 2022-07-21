@@ -27,11 +27,22 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
     {
         private readonly SpecialNeedsAnalysisDbContext context;
 
+        /// <summary>
+        /// Constructor that sets up the connection to the database for CRUD operations
+        /// </summary>
+        /// <param name="context">holds the connection to the database</param>
         public DatabaseCrud(SpecialNeedsAnalysisDbContext context)
         {
             this.context = context;
         }
 
+        /// <summary>
+        /// Creates a new user inside the database. This function will store user information in Users
+        /// and the hashed password inside of UserLogin along with the salt.
+        /// </summary>
+        /// <param name="userInfo">User information fed in by the client</param>
+        /// <param name="password">Password associated with the user's email (PK)</param>
+        /// <returns>true/false for success or failure of the method</returns>
         public async Task<bool> CreateUser(CreateUserModel createUserModel)
         {
             await context.Users.AddAsync(new UserDocument(createUserModel.UserModel));
@@ -45,17 +56,37 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             return true;
         }
 
+        /// <summary>
+        /// Queries the UserLogin table to obtain Login information 
+        /// </summary>
+        /// <param name="email">PK used to associate login information with their login info</param>
+        /// <returns>a UserLogin object that holds all DB table info</returns>
+
         //public async Task<UserLogin?> FindUserLogin(string email)
         //{
         //    UserLogin? userLogin = await context.UserLogin.FindAsync(email);
         //    return userLogin;
         //}
 
+        /// <summary>
+        /// Queries the sessions table to obtain loggin sessions. This can be
+        /// used to verify that a user has been successfully logged in.
+        /// </summary>
+        /// <param name="email">PK used to associate login information with their session info</param>
+        /// <returns>a SessionTokenModel object that holds all the session table info</returns>
+
         //public async Task<SessionTokenModel?> FindUserSessions(string email)
         //{
         //    SessionTokenModel? userSessions = await context.Sessions.FindAsync(email);
         //    return userSessions;
         //}
+
+        /// <summary>
+        /// Queries the Users table to obtain information stored about the user. This
+        /// information will be used in calculations further down the line
+        /// </summary>
+        /// <param name="email">PK used to associate the User with their own information</param>
+        /// <returns>a UserDocument object that holds all the User's info</returns>
 
         //public async Task<UserDocument?> FindUser(string email)
         //{
@@ -74,6 +105,12 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             return user;
         }
 
+        /// <summary>
+        /// Updates user information inside the User's table
+        /// </summary>
+        /// <param name="updateUserModel">Object that holds the session token and all the updated info about the user 
+        /// replace old info</param>
+        /// <returns>true/false success or failure</returns>
         public async Task<bool> UpdateUser(UpdateUserModel updateUserModel)
         {
             UserDocument? userDocument = await FindUserBySessionToken(updateUserModel.SessionToken);
@@ -84,6 +121,13 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             return true;
         }
 
+        /// <summary>
+        /// "Deletes" the user from the database. In reality it chages a stored variable
+        /// that lets the frontend know they have deleted their account. This was done to 
+        /// ensure easy restoration of user information.
+        /// </summary>
+        /// <param name="sessionToken">PK to specify which user needs to be deleted in the Users table</param>
+        /// <returns>true/false success or failure</returns>
         public async Task<bool> DeleteUser(string sessionToken)
         {
             UserDocument? userDocument = await FindUserBySessionToken(sessionToken);
@@ -94,6 +138,13 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             return true;
         }
 
+        /// <summary>
+        /// Adds a Benificiary to an exisiting user. This allows the user to 
+        /// create as many dependents as necessary, or even designate themselves
+        /// as a benificiary of their own estate.
+        /// </summary>
+        /// <param name="addBeneficiaryModel">Everything needed to add a benificiary in Users table</param>
+        /// <returns>true/false success or failure</returns>
         public async Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel)
         {
             UserDocument? userDocument = await FindUserBySessionToken(addBeneficiaryModel.SessionToken);
@@ -109,6 +160,13 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             return true;
         }
 
+        /// <summary>
+        /// Logs an existing user into the website. This is done through
+        /// password authentication then upon success creates a session for
+        /// that particular user to remain logged in.
+        /// </summary>
+        /// <param name="loginRequest">Email and Passsword</param>
+        /// <returns>returns a string representing a sessionid or null on faiure</returns>
         public async Task<string?> Login(UserLogin loginRequest)
         {
             UserLogin? attemptedLoginCredential = await context.UserLogin.Where(ul => ul.Email == loginRequest.Email).FirstOrDefaultAsync();
