@@ -1,14 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Special_Needs_Analysis_Calculator.Data;
 using Special_Needs_Analysis_Calculator.Data.Database;
+using Special_Needs_Analysis_Calculator.Data.Models.Login;
+using Special_Needs_Analysis_Calculator.Data.Models.People;
 
 namespace Special_Needs_Analysis_Calculator_Backend.Controllers
 {
+    // Facade structure 
     [ApiController]
     [Route("[controller]")]
     public class SpecialNeedsAnalysisController : Controller
     {
         private readonly IDatabaseCrud context;
+
 
         public SpecialNeedsAnalysisController(IDatabaseCrud context)
         {
@@ -22,18 +26,65 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         }
 
         [HttpPost("CreateUser")]
-        public async Task<bool> CreateUser(UserModel userModel)
-        {
-            if (!ModelState.IsValid) return false;
-            return await context.CreateUser(userModel);
-        }
-
-
-        [HttpPost("Login")]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> CreateUser(UserModel userModel, string password)
         {
             if (!ModelState.IsValid) return BadRequest();
-            return NotFound();
+
+            bool success = await context.CreateUser(userModel, password);
+
+            if(success) return Ok(userModel);
+            else return BadRequest();
+        }
+
+        //[HttpPost("FindUser")]
+        //public async Task<UserDocument> FindUser(string Email)
+        //{
+        //    UserDocument userDocument = await context.FindUser(Email);
+        //    if (userDocument.User.IsAccountActive == false) return null;
+        //    return userDocument;
+        //}
+
+        [HttpPost("UpdateUser")]
+        public async Task<IActionResult> UpdateUser(UserModel userModel)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            bool success = await context.UpdateUser(userModel);
+
+            if (success) return Ok(userModel);
+            else return BadRequest();
+        }
+
+        // Delete User
+        [HttpPost("DeleteUser")]
+        public async Task<IActionResult> DeleteUser(string email)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            bool success = await context.DeleteUser(email);
+
+            if (success) return Ok();
+            else return BadRequest();
+        }
+
+        [HttpPost("AddBeneficiary")]
+        public async Task<IActionResult> AddBeneficiary(string email, BeneficiaryModel beneficiaryModel)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            bool success = await context.AddBeneficiary(email, beneficiaryModel);
+
+            if (success) return Ok();
+            else return BadRequest();
+        }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(UserLogin userLogin)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+            string? sessionId = await context.Login(userLogin);
+            if (sessionId == null) return NotFound();
+            return Ok(sessionId);
         }
 
         [HttpGet("Dashboard")]
@@ -41,8 +92,6 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
             return NotFound();
-
-
         }
     }
 }

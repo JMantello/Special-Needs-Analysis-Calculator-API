@@ -5,19 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Special_Needs_Analysis_Calculator.Data.Models
+namespace Special_Needs_Analysis_Calculator.Data.Models.People
 {
-    public class PersonModel
+    public class BeneficiaryModel
     {
-        // basic info
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Address { get; set; }
         public string StateOfResidence { get; set; }
-
-        // advanced info
-        public ConditionStatusModel? ConditionStatus { get; set; } 
-        public EligibilityModel? Eligibility { get; set; }      // eligabilty might not be know on creation
+        public bool IsStudent { get; set; }
+        public ConditionStatusModel? ConditionStatus { get; set; }
+        public EligibilityModel? Eligibility { get; set; }
         public ExpensesModel? Expenses { get; set; }
     }
 }

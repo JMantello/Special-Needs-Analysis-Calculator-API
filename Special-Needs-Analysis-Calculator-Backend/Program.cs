@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Special_Needs_Analysis_Calculator.Data;
 using Special_Needs_Analysis_Calculator.Data.Database;
 
 var builder = WebApplication.CreateBuilder(args);
