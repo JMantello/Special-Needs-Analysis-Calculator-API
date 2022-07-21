@@ -14,7 +14,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
     public interface IDatabaseCrud
     {
         public Task<bool> CreateUser(CreateUserModel createUserModel);
-        public Task<UserDocument?> FindUser(string email);
+        public Task<UserDocument?> FindUserBySessionToken(string sessionToken);
         public Task<bool> UpdateUser(UpdateUserModel updateUserModel);
         public Task<bool> DeleteUser(string sessionToken);
         public Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel);
@@ -45,23 +45,23 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             return true;
         }
 
-        public async Task<UserLogin?> FindUserLogin(string email)
-        {
-            UserLogin? userLogin = await context.UserLogin.FindAsync(email);
-            return userLogin;
-        }
+        //public async Task<UserLogin?> FindUserLogin(string email)
+        //{
+        //    UserLogin? userLogin = await context.UserLogin.FindAsync(email);
+        //    return userLogin;
+        //}
 
-        public async Task<SessionTokenModel?> FindUserSessions(string email)
-        {
-            SessionTokenModel? userSessions = await context.Sessions.FindAsync(email);
-            return userSessions;
-        }
+        //public async Task<SessionTokenModel?> FindUserSessions(string email)
+        //{
+        //    SessionTokenModel? userSessions = await context.Sessions.FindAsync(email);
+        //    return userSessions;
+        //}
 
-        public async Task<UserDocument?> FindUser(string email)
-        {
-            UserDocument? user = await context.Users.FindAsync(email);
-            return user;
-        }
+        //public async Task<UserDocument?> FindUser(string email)
+        //{
+        //    UserDocument? user = await context.Users.FindAsync(email);
+        //    return user;
+        //}
 
         public async Task<UserDocument?> FindUserBySessionToken(string sessionToken)
         {
@@ -70,7 +70,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             
             if (session == null) return null;
 
-            UserDocument? user = await FindUser(session.Email);
+            UserDocument? user = await context.Users.FindAsync(session.Email);
             return user;
         }
 
