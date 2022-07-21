@@ -31,10 +31,24 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 
         public async Task<bool> CreateUser(UserModel userInfo, string password)
         {
+            var salt = Guid.NewGuid().ToString();
+
             await context.Users.AddAsync(new UserDocument(userInfo));
-            await context.UserLogin.AddAsync(new UserLogin(userInfo.Email, SHA256Hash.PasswordHash(password), Guid.NewGuid().ToString()));
+            await context.UserLogin.AddAsync(new UserLogin(userInfo.Email, SHA256Hash.PasswordHash(password, salt), salt));
             await context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<UserLogin?> FindUserLogin(string email)
+        {
+            UserLogin? userLogin = await context.UserLogin.FindAsync(email);
+            return userLogin;
+        }
+
+        public async Task<SessionTokenModel?> FindUserSessions(string email)
+        {
+            SessionTokenModel? userSessions = await context.Sessions.FindAsync(email);
+            return userSessions;
         }
 
         public async Task<UserDocument?> FindUser(string email)
@@ -80,8 +94,10 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 
         public async Task<string?> Login(UserLogin userLogin)
         {
-            // convert to 256
-            var UserHash = SHA256Hash.PasswordHash(userLogin.Password);
+            // get salt from the database
+            var userDocument = await FindUser(userLogin.Email);
+            var userLoginInfo = await FindUserLogin(userLogin.Email);
+            var UserHash = SHA256Hash.PasswordHash(userLogin.Password, userLoginInfo.Salt);
 
             UserLogin? validCredentials = context.UserLogin
                 .Where(ul => ul.Email == userLogin.Email && ul.Password == UserHash)

@@ -28,9 +28,13 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             UserLogin? userLogin = context.UserLogin.FirstOrDefault();
             if (userLogin != null) return;
 
-            context.Add(new UserLogin { Email = "Iris@gmail.com", Password = SHA256Hash.PasswordHash("iris"), Salt = Guid.NewGuid().ToString()});
-            context.Add(new UserLogin { Email = "Torren@gmail.com", Password = SHA256Hash.PasswordHash("torren"), Salt = Guid.NewGuid().ToString()});
-            context.Add(new UserLogin { Email = "Roots@gmail.com", Password = SHA256Hash.PasswordHash("roots"), Salt = Guid.NewGuid().ToString()});
+            var salt1 = Guid.NewGuid().ToString();
+            var salt2 = Guid.NewGuid().ToString();
+            var salt3 = Guid.NewGuid().ToString();
+
+            context.Add(new UserLogin { Email = "Iris@gmail.com", Password = SHA256Hash.PasswordHash("iris",salt1), Salt = salt1});
+            context.Add(new UserLogin { Email = "Torren@gmail.com", Password = SHA256Hash.PasswordHash("torren",salt2), Salt = salt2});
+            context.Add(new UserLogin { Email = "Roots@gmail.com", Password = SHA256Hash.PasswordHash("roots",salt3), Salt = salt3});
             context.SaveChanges();
         }
 
