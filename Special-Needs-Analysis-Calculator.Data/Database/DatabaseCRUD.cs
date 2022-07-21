@@ -1,5 +1,8 @@
-﻿using Special_Needs_Analysis_Calculator.Data.Models.Login;
+﻿using Microsoft.EntityFrameworkCore;
+using Special_Needs_Analysis_Calculator.Data.Models.InputModels;
+using Special_Needs_Analysis_Calculator.Data.Models.Login;
 using Special_Needs_Analysis_Calculator.Data.Models.People;
+using Special_Needs_Analysis_Calculator.Data.Models.Person;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +13,12 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 {
     public interface IDatabaseCrud
     {
-        public Task<bool> CreateUser(UserModel userInfo, string password);
+        public Task<bool> CreateUser(CreateUserModel createUserModel);
         public Task<UserDocument?> FindUser(string email);
-        public Task<bool> UpdateUser(UserModel userInfo);
-        public Task<bool> DeleteUser(string email);
-        public Task<bool> AddBeneficiary(string email, BeneficiaryModel dependant);
-        public Task<string?> Login(UserLogin userLogin);
+        public Task<bool> UpdateUser(UpdateUserModel updateUserModel);
+        public Task<bool> DeleteUser(string sessionToken);
+        public Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel);
+        public Task<string?> Login(UserLogin loginRequest);
 
     }
 
@@ -29,13 +32,16 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             this.context = context;
         }
 
-        public async Task<bool> CreateUser(UserModel userInfo, string password)
+        public async Task<bool> CreateUser(CreateUserModel createUserModel)
         {
-            var salt = Guid.NewGuid().ToString();
+            await context.Users.AddAsync(new UserDocument(createUserModel.UserModel));
+            
+            string salt = Guid.NewGuid().ToString();
 
-            await context.Users.AddAsync(new UserDocument(userInfo));
-            await context.UserLogin.AddAsync(new UserLogin(userInfo.Email, SHA256Hash.PasswordHash(password, salt), salt));
+            await context.UserLogin.AddAsync(new UserLogin(createUserModel.UserModel.Email, SHA256Hash.PasswordHash(createUserModel.Password, salt), salt));
+            
             await context.SaveChangesAsync();
+            
             return true;
         }
 
@@ -57,19 +63,30 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             return user;
         }
 
-        public async Task<bool> UpdateUser(UserModel userInfo)
+        public async Task<UserDocument?> FindUserBySessionToken(string sessionToken)
         {
-            UserDocument? userDocument = await FindUser(userInfo.Email);
+            SessionTokenModel? session = await context.Sessions
+                .Where(s => s.SessionToken == sessionToken).FirstOrDefaultAsync();
+            
+            if (session == null) return null;
+
+            UserDocument? user = await FindUser(session.Email);
+            return user;
+        }
+
+        public async Task<bool> UpdateUser(UpdateUserModel updateUserModel)
+        {
+            UserDocument? userDocument = await FindUserBySessionToken(updateUserModel.SessionToken);
             if (userDocument == null) return false;
-            userDocument.User = userInfo;
+            userDocument.User = updateUserModel.UserModel;
             context.Users.Update(userDocument); // I wonder if this step is necessary
             await context.SaveChangesAsync(); // For if SaveChangesAsync takes care of the update.
             return true;
         }
 
-        public async Task<bool> DeleteUser(string email)
+        public async Task<bool> DeleteUser(string sessionToken)
         {
-            UserDocument? userDocument = await FindUser(email);
+            UserDocument? userDocument = await FindUserBySessionToken(sessionToken);
             if (userDocument == null) return false;
             userDocument.User.IsAccountActive = false;
             context.Users.Update(userDocument);
@@ -77,37 +94,36 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             return true;
         }
 
-        public async Task<bool> AddBeneficiary(string email, BeneficiaryModel dependant)
+        public async Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel)
         {
-            UserDocument? userDocument = await FindUser(email);
+            UserDocument? userDocument = await FindUserBySessionToken(addBeneficiaryModel.SessionToken);
             if (userDocument == null) return false;
 
             if (userDocument.User.Beneficiaries == null)
                 userDocument.User.Beneficiaries = new List<BeneficiaryModel>();
 
-            userDocument.User.Beneficiaries.Add(dependant);
+            userDocument.User.Beneficiaries.Add(addBeneficiaryModel.BeneficiaryModel);
+            
             context.Users.Update(userDocument);
-
             await context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<string?> Login(UserLogin userLogin)
+        public async Task<string?> Login(UserLogin loginRequest)
         {
-            // get salt from the database
-            var userDocument = await FindUser(userLogin.Email);
-            var userLoginInfo = await FindUserLogin(userLogin.Email);
-            var UserHash = SHA256Hash.PasswordHash(userLogin.Password, userLoginInfo.Salt);
+            UserLogin? attemptedLoginCredential = await context.UserLogin.Where(ul => ul.Email == loginRequest.Email).FirstOrDefaultAsync();
 
-            UserLogin? validCredentials = context.UserLogin
-                .Where(ul => ul.Email == userLogin.Email && ul.Password == UserHash)
-                .FirstOrDefault();
+            if (attemptedLoginCredential == null) return null;
 
-            if (validCredentials == null) return null;
+            string reHashedPassword = SHA256Hash.PasswordHash(loginRequest.Password, attemptedLoginCredential.Salt);
+
+            if(attemptedLoginCredential.Password != reHashedPassword) return null;
 
             string sessionToken = Guid.NewGuid().ToString();
 
-            await context.Sessions.AddAsync(new SessionTokenModel(userLogin.Email, sessionToken));
+            await context.Sessions.AddAsync(
+                new SessionTokenModel(loginRequest.Email, sessionToken));
+
             await context.SaveChangesAsync();
 
             return sessionToken;
