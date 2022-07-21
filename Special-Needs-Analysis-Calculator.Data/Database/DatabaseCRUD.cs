@@ -10,7 +10,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 {
     public interface IDatabaseCrud
     {
-        public Task<bool> CreateUser(UserModel userInfo);
+        public Task<bool> CreateUser(UserModel userInfo, string password);
         public Task<UserDocument?> FindUser(string email);
         public Task<bool> UpdateUser(UserModel userInfo);
         public Task<bool> DeleteUser(string email);
@@ -29,9 +29,10 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             this.context = context;
         }
 
-        public async Task<bool> CreateUser(UserModel userInfo)
+        public async Task<bool> CreateUser(UserModel userInfo, string password)
         {
             await context.Users.AddAsync(new UserDocument(userInfo));
+            await context.UserLogin.AddAsync(new UserLogin(userInfo.Email, SHA256Hash.PasswordHash(password)));
             await context.SaveChangesAsync();
             return true;
         }
@@ -79,8 +80,11 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 
         public async Task<string?> Login(UserLogin userLogin)
         {
+            // convert to 256
+            var UserHash = SHA256Hash.PasswordHash(userLogin.Password);
+
             UserLogin? validCredentials = context.UserLogin
-                .Where(ul => ul == userLogin)
+                .Where(ul => ul.Email == userLogin.Email && ul.Password == UserHash)
                 .FirstOrDefault();
 
             if (validCredentials == null) return null;
@@ -92,5 +96,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 
             return sessionToken;
         }
+
+
     }
 }

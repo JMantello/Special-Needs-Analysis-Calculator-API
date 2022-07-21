@@ -20,19 +20,19 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             using var context = scope.ServiceProvider.GetRequiredService<SpecialNeedsAnalysisDbContext>();
             context.Database.EnsureCreated();
             AddUsers(context);
-            AddUserLogins(context);
+            //AddUserLogins(context);
         }
 
-        private static void AddUserLogins(SpecialNeedsAnalysisDbContext context)
+        /*private static void AddUserLogins(SpecialNeedsAnalysisDbContext context)
         {
             UserLogin? userLogin = context.UserLogin.FirstOrDefault();
             if (userLogin != null) return;
 
-            context.Add(new UserLogin { Email = "Iris@gmail.com", Password = "iris" });
-            context.Add(new UserLogin { Email = "Torren@gmail.com", Password = "torren" });
-            context.Add(new UserLogin { Email = "Roots@gmail.com", Password = "roots" });
+            context.Add(new UserLogin { Email = "Iris@gmail.com", Password = SHA256Hash.PasswordHash("iris")});
+            context.Add(new UserLogin { Email = "Torren@gmail.com", Password = SHA256Hash.PasswordHash("torren")});
+            context.Add(new UserLogin { Email = "Roots@gmail.com", Password = SHA256Hash.PasswordHash("roots")});
             context.SaveChanges();
-        }
+        }*/
 
         private static void AddUsers(SpecialNeedsAnalysisDbContext context)
         {
