@@ -19,6 +19,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         public Task<bool> DeleteUser(string sessionToken);
         public Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel);
         public Task<string?> Login(UserLogin loginRequest);
+        public Task<bool> Logout(SessionTokenModel session);
 
     }
 
@@ -40,8 +41,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// Creates a new user inside the database. This function will store user information in Users
         /// and the hashed password inside of UserLogin along with the salt.
         /// </summary>
-        /// <param name="userInfo">User information fed in by the client</param>
-        /// <param name="password">Password associated with the user's email (PK)</param>
+        /// <param name="createUserModel">User information fed in by the client</param>
         /// <returns>true/false for success or failure of the method</returns>
         public async Task<bool> CreateUser(CreateUserModel createUserModel)
         {
@@ -56,6 +56,12 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             return true;
         }
 
+        /// <summary>
+        /// Take's in a session token and uses that to query user
+        /// information.
+        /// </summary>
+        /// <param name="sessionToken"></param>
+        /// <returns>all the user's information stored in the Users table</returns>
         public async Task<UserDocument?> FindUserBySessionToken(string sessionToken)
         {
             SessionTokenModel? session = await context.Sessions
@@ -88,7 +94,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// that lets the frontend know they have deleted their account. This was done to 
         /// ensure easy restoration of user information.
         /// </summary>
-        /// <param name="sessionToken">PK to specify which user needs to be deleted in the Users table</param>
+        /// <param name="sessionToken">token to specify which user needs to be deleted in the Users table</param>
         /// <returns>true/false success or failure</returns>
         public async Task<bool> DeleteUser(string sessionToken)
         {
@@ -147,6 +153,19 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             await context.SaveChangesAsync();
 
             return sessionToken;
+        }
+
+        public async Task<bool> Logout(SessionTokenModel session)
+        {
+            var TokenModel = await context.Sessions.FindAsync(session.Email);
+
+            if (TokenModel != null && TokenModel.Email == session.Email)
+            {
+                context.Sessions.Remove(TokenModel);
+                context.SaveChanges();
+                return true;
+            }
+            else return false;
         }
     }
 }
