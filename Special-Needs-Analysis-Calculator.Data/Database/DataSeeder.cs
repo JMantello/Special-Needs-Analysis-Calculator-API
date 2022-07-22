@@ -36,7 +36,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             context.SaveChanges();
         }
 
-        public static void SeedFromController(IDatabaseCRUD context)
+        public static void SeedFromController(IDatabaseCrud context)
         {
             // Creating Users
             context.CreateUser(new CreateUserModel
