@@ -25,7 +25,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             AddUserLogins(context);
         }
 
-        public static void SeedFromController(IDatabaseCrud context)
+        public static void SeedFromController(IDatabaseCRUD context)
         {
             // Creating Users
             context.CreateUser(new CreateUserModel

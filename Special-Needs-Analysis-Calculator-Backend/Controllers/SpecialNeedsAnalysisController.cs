@@ -10,10 +10,10 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
     [Route("[controller]")]
     public class SpecialNeedsAnalysisController : Controller
     {
-        private readonly IDatabaseCrud context;
+        private readonly IDatabaseCRUD context;
 
 
-        public SpecialNeedsAnalysisController(IDatabaseCrud context)
+        public SpecialNeedsAnalysisController(IDatabaseCRUD context)
         {
             this.context = context;
         }
@@ -79,8 +79,17 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             else return Ok(sessionId);
         }
 
-        [HttpGet("Dashboard")]
-        public async Task<IActionResult> Dashboard(string sessionId)
+        [HttpPost("Logout")]
+        public async Task<IActionResult> Logout(SessionTokenModel sessionToken)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+            await context.Logout(sessionToken);
+            return Ok();
+        }
+
+
+        [HttpPost("Dashboard")]
+        public async Task<IActionResult> Dashboard(SessionTokenModel sessionToken)
         {
             if (!ModelState.IsValid) return BadRequest();
             return NotFound();
