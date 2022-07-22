@@ -40,8 +40,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// Creates a new user inside the database. This function will store user information in Users
         /// and the hashed password inside of UserLogin along with the salt.
         /// </summary>
-        /// <param name="userInfo">User information fed in by the client</param>
-        /// <param name="password">Password associated with the user's email (PK)</param>
+        /// <param name="createUserModel">User information fed in by the client</param>
         /// <returns>true/false for success or failure of the method</returns>
         public async Task<bool> CreateUser(CreateUserModel createUserModel)
         {
@@ -57,43 +56,11 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         }
 
         /// <summary>
-        /// Queries the UserLogin table to obtain Login information 
+        /// Take's in a session token and uses that to query user
+        /// information.
         /// </summary>
-        /// <param name="email">PK used to associate login information with their login info</param>
-        /// <returns>a UserLogin object that holds all DB table info</returns>
-
-        //public async Task<UserLogin?> FindUserLogin(string email)
-        //{
-        //    UserLogin? userLogin = await context.UserLogin.FindAsync(email);
-        //    return userLogin;
-        //}
-
-        /// <summary>
-        /// Queries the sessions table to obtain loggin sessions. This can be
-        /// used to verify that a user has been successfully logged in.
-        /// </summary>
-        /// <param name="email">PK used to associate login information with their session info</param>
-        /// <returns>a SessionTokenModel object that holds all the session table info</returns>
-
-        //public async Task<SessionTokenModel?> FindUserSessions(string email)
-        //{
-        //    SessionTokenModel? userSessions = await context.Sessions.FindAsync(email);
-        //    return userSessions;
-        //}
-
-        /// <summary>
-        /// Queries the Users table to obtain information stored about the user. This
-        /// information will be used in calculations further down the line
-        /// </summary>
-        /// <param name="email">PK used to associate the User with their own information</param>
-        /// <returns>a UserDocument object that holds all the User's info</returns>
-
-        //public async Task<UserDocument?> FindUser(string emai
-        //{
-        //    UserDocument? user = await context.Users.FindAsync(email);
-        //    return user;
-        //}
-
+        /// <param name="sessionToken"></param>
+        /// <returns>all the user's information stored in the Users table</returns>
         public async Task<UserDocument?> FindUserBySessionToken(string sessionToken)
         {
             SessionTokenModel? session = await context.Sessions
@@ -126,7 +93,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// that lets the frontend know they have deleted their account. This was done to 
         /// ensure easy restoration of user information.
         /// </summary>
-        /// <param name="sessionToken">PK to specify which user needs to be deleted in the Users table</param>
+        /// <param name="sessionToken">token to specify which user needs to be deleted in the Users table</param>
         /// <returns>true/false success or failure</returns>
         public async Task<bool> DeleteUser(string sessionToken)
         {
