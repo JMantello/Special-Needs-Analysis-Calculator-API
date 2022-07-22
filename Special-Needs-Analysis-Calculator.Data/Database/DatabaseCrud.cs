@@ -19,7 +19,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         public Task<bool> DeleteUser(string sessionToken);
         public Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel);
         public Task<string?> Login(UserLogin loginRequest);
-        public Task Logout(SessionTokenModel sessionToken);
+        public Task Logout(string sessionToken);
 
 
     }
@@ -151,9 +151,9 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             return sessionToken;
         }
 
-        public async Task Logout(SessionTokenModel sessionToken)
+        public async Task Logout(string sessionToken)
         {
-            SessionTokenModel? session = await context.Sessions.Where(session => session.SessionToken == sessionToken.SessionToken).FirstOrDefaultAsync();
+            SessionTokenModel? session = await context.Sessions.Where(session => session.SessionToken == sessionToken).FirstOrDefaultAsync();
             if(session == null) return;
             context.Sessions.Remove(session);
             await context.SaveChangesAsync();

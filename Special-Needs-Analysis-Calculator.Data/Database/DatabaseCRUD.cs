@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Special_Needs_Analysis_Calculator.Data.Database
 {
-    public interface IDatabaseCrud
+    public interface IDatabaseCRUD
     {
         public Task<bool> CreateUser(CreateUserModel createUserModel);
         public Task<UserDocument?> FindUserBySessionToken(string sessionToken);
@@ -19,11 +19,13 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         public Task<bool> DeleteUser(string sessionToken);
         public Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel);
         public Task<string?> Login(UserLogin loginRequest);
+        public Task Logout(string sessionToken);
+
 
     }
 
     // Singleton
-    public class DatabaseCRUD : IDatabaseCrud
+    public class DatabaseCRUD : IDatabaseCRUD
     {
         private readonly SpecialNeedsAnalysisDbContext context;
 
@@ -55,44 +57,6 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             
             return true;
         }
-
-        /// <summary>
-        /// Queries the UserLogin table to obtain Login information 
-        /// </summary>
-        /// <param name="email">PK used to associate login information with their login info</param>
-        /// <returns>a UserLogin object that holds all DB table info</returns>
-
-        //public async Task<UserLogin?> FindUserLogin(string email)
-        //{
-        //    UserLogin? userLogin = await context.UserLogin.FindAsync(email);
-        //    return userLogin;
-        //}
-
-        /// <summary>
-        /// Queries the sessions table to obtain loggin sessions. This can be
-        /// used to verify that a user has been successfully logged in.
-        /// </summary>
-        /// <param name="email">PK used to associate login information with their session info</param>
-        /// <returns>a SessionTokenModel object that holds all the session table info</returns>
-
-        //public async Task<SessionTokenModel?> FindUserSessions(string email)
-        //{
-        //    SessionTokenModel? userSessions = await context.Sessions.FindAsync(email);
-        //    return userSessions;
-        //}
-
-        /// <summary>
-        /// Queries the Users table to obtain information stored about the user. This
-        /// information will be used in calculations further down the line
-        /// </summary>
-        /// <param name="email">PK used to associate the User with their own information</param>
-        /// <returns>a UserDocument object that holds all the User's info</returns>
-
-        //public async Task<UserDocument?> FindUser(string email)
-        //{
-        //    UserDocument? user = await context.Users.FindAsync(email);
-        //    return user;
-        //}
 
         public async Task<UserDocument?> FindUserBySessionToken(string sessionToken)
         {
@@ -185,6 +149,15 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             await context.SaveChangesAsync();
 
             return sessionToken;
+        }
+
+        public async Task Logout(string sessionToken)
+        {
+            SessionTokenModel? session = await context.Sessions.Where(session => session.SessionToken == sessionToken).FirstOrDefaultAsync();
+            if(session == null) return;
+            context.Sessions.Remove(session);
+            await context.SaveChangesAsync();
+
         }
     }
 }
