@@ -10,10 +10,10 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
     [Route("[controller]")]
     public class SpecialNeedsAnalysisController : Controller
     {
-        private readonly IDatabaseCRUD context;
+        private readonly IDatabaseCrud context;
 
 
-        public SpecialNeedsAnalysisController(IDatabaseCRUD context)
+        public SpecialNeedsAnalysisController(IDatabaseCrud context)
         {
             this.context = context;
         }
@@ -47,11 +47,11 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         }
 
         [HttpPost("DeleteUser")]
-        public async Task<IActionResult> DeleteUser(SessionTokenModel sessionTokenModel)
+        public async Task<IActionResult> DeleteUser(string sessionToken)
         {
             if (!ModelState.IsValid) return BadRequest();
 
-            bool success = await context.DeleteUser(sessionTokenModel.SessionToken);
+            bool success = await context.DeleteUser(sessionToken);
 
             if (success) return Ok();
             else return BadRequest();
@@ -80,16 +80,18 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         }
 
         [HttpPost("Logout")]
-        public async Task<IActionResult> Logout(SessionTokenModel sessionTokenModel)
+        public async Task<IActionResult> Logout(SessionTokenModel session)
         {
             if (!ModelState.IsValid) return BadRequest();
-            await context.Logout(sessionTokenModel.SessionToken);
-            return Ok();
+
+            bool result = await context.Logout(session);
+
+            if (result) return Ok();
+            else return Unauthorized();
         }
 
-
-        [HttpPost("Dashboard")]
-        public async Task<IActionResult> Dashboard(SessionTokenModel sessionTokenModel)
+        [HttpGet("Dashboard")]
+        public async Task<IActionResult> Dashboard(string sessionId)
         {
             if (!ModelState.IsValid) return BadRequest();
             return NotFound();

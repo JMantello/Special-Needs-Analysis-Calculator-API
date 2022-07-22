@@ -133,7 +133,6 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
                         Expenses = new ExpensesModel(1500)
                     }
                 }
-
             }));
 
             context.Add(new UserDocument(new UserModel
