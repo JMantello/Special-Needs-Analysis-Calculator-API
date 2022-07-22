@@ -10,12 +10,12 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.Login
     public class SessionTokenModel
     {
         [Key]
-        public string Email { get; set; }
+        public string? Email { get; set; }
         public string SessionToken { get; set; }
 
         public SessionTokenModel() { }
 
-        public SessionTokenModel(string email, string sessionToken)
+        public SessionTokenModel(string? email, string sessionToken)
         {
             Email = email;
             SessionToken = sessionToken;

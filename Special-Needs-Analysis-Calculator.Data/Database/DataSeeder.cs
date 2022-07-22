@@ -23,9 +23,20 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             context.Database.EnsureCreated();
             AddUsers(context);
             AddUserLogins(context);
+            AddSessions(context);
         }
 
-        public static void SeedFromController(IDatabaseCrud context)
+        private static void AddSessions(SpecialNeedsAnalysisDbContext context)
+        {
+            SessionTokenModel? session = context.Sessions.FirstOrDefault();
+            if (session != null) return;
+
+            SessionTokenModel newSession = new SessionTokenModel { Email = "Iris@gmail.com", SessionToken = "sessionToken" };
+            context.Sessions.Add(newSession);
+            context.SaveChanges();
+        }
+
+        public static void SeedFromController(IDatabaseCRUD context)
         {
             // Creating Users
             context.CreateUser(new CreateUserModel
