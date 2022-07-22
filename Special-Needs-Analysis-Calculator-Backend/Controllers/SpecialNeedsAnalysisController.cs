@@ -79,6 +79,17 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             else return Ok(sessionId);
         }
 
+        [HttpPost("Logout")]
+        public async Task<IActionResult> Logout(SessionTokenModel session)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            bool result = await context.Logout(session);
+
+            if (result) return Ok();
+            else return Unauthorized();
+        }
+
         [HttpGet("Dashboard")]
         public async Task<IActionResult> Dashboard(string sessionId)
         {

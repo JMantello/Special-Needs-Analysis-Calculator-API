@@ -19,6 +19,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         public Task<bool> DeleteUser(string sessionToken);
         public Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel);
         public Task<string?> Login(UserLogin loginRequest);
+        public Task<bool> Logout(SessionTokenModel session);
 
     }
 
@@ -152,6 +153,19 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             await context.SaveChangesAsync();
 
             return sessionToken;
+        }
+
+        public async Task<bool> Logout(SessionTokenModel session)
+        {
+            var TokenModel = await context.Sessions.FindAsync(session.Email);
+
+            if (TokenModel != null && TokenModel.Email == session.Email)
+            {
+                context.Sessions.Remove(TokenModel);
+                context.SaveChanges();
+                return true;
+            }
+            else return false;
         }
     }
 }
