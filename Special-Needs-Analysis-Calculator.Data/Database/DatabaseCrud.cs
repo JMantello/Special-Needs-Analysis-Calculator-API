@@ -159,7 +159,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         {
             var TokenModel = await context.Sessions.FindAsync(session.Email);
 
-            if (TokenModel != null && TokenModel.Email == session.Email)
+            if (TokenModel != null && TokenModel.SessionToken == session.SessionToken)
             {
                 context.Sessions.Remove(TokenModel);
                 context.SaveChanges();
