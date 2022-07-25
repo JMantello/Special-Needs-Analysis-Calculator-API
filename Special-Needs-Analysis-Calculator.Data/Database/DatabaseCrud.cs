@@ -3,6 +3,7 @@ using Special_Needs_Analysis_Calculator.Data.Models;
 using Special_Needs_Analysis_Calculator.Data.Models.InputModels;
 using Special_Needs_Analysis_Calculator.Data.Models.Login;
 using Special_Needs_Analysis_Calculator.Data.Models.People;
+using Special_Needs_Analysis_Calculator.Data.Models.Person;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         public Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel);
         public Task<string?> Login(UserLogin loginRequest);
         public Task<bool> Logout(SessionTokenModel session);
+
     }
 
     // Singleton
@@ -154,17 +156,11 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             return sessionToken;
         }
 
-        /// <summary>
-        /// Lougouts a users session which forces them to log back
-        /// in. In order to see their information.
-        /// </summary>
-        /// <param name="session">object that holds information to delete user's session</param>
-        /// <returns>true/false success or failure</returns>
         public async Task<bool> Logout(SessionTokenModel session)
         {
             var TokenModel = await context.Sessions.FindAsync(session.Email);
 
-            if (TokenModel != null && TokenModel.SessionToken == session.SessionToken)
+            if (TokenModel != null && TokenModel.Email == session.Email)
             {
                 context.Sessions.Remove(TokenModel);
                 context.SaveChanges();
