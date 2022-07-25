@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Special_Needs_Analysis_Calculator.Data.Models;
 using Special_Needs_Analysis_Calculator.Data.Models.InputModels;
 using Special_Needs_Analysis_Calculator.Data.Models.Login;
 using Special_Needs_Analysis_Calculator.Data.Models.People;
