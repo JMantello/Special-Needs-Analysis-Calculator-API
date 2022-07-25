@@ -12,5 +12,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.Person.Info.Eligibility
         public bool IsAllowedSocialSecurityDisabilityInsurance(BeneficiaryModel beneficiary, ConditionStatusModel status);
         public bool IsAllowedSupplimentalSecurityIncome(ConditionStatusModel status);
         public bool IsAllowedMedicaid(BeneficiaryModel beneficiary);
+        public bool IsAllowedAbleAccount();
+        public bool IsAllowedSpecialNeedsTrust();
     }
 }

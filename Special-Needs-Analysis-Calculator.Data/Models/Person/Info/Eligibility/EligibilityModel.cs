@@ -12,6 +12,8 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.Person.Info.Eligibility
         public bool AllowedSocialSecurityDisabilityInsurance { get; set; }
         public bool AllowedSupplimentalSecurityIncome { get; set; }
         public bool AllowedMedicaid { get; set; }
+        public bool AllowedAbleAccount { get; set; }
+        public bool AllowedSpecialNeedsTrust { get; set; }
 
         public EligibilityModel(bool allowedSocialSecurityDisabilityInsurance, bool allowedSupplimentalSecurityIncome, bool allowedMedicaid)
         {
@@ -31,6 +33,16 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.Person.Info.Eligibility
         }
 
         public bool IsAllowedMedicaid(BeneficiaryModel beneficiary)
+        {
+            return false;
+        }
+
+        public bool IsAllowedAbleAccount()
+        {
+            return false;
+        }
+
+        public bool IsAllowedSpecialNeedsTrust()
         {
             return false;
         }
