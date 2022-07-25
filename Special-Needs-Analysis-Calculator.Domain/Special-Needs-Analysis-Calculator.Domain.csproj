@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Special-Needs-Analysis-Calculator.Data\Special-Needs-Analysis-Calculator.Data.csproj" />
+  </ItemGroup>
+
 </Project>

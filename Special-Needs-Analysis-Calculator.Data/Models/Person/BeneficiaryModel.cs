@@ -14,6 +14,13 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.People
         public string StateOfResidence { get; set; }
         public bool IsEmployed { get; set; }
         public int EmploymentYears { get; set; }
+        public int ExpectedLifespan { get; set; }
+        public double SocialSecurityDisabilityInsuranceMonthly { get; set; }
+        public double AnnualABLEContributions { get; set; }
+        public double ABLEFundRate { get; set; }
+
+        public ConditionStatusModel? ConditionStatus { get; set; }
         public ExpensesModel? Expenses { get; set; }
+
     }
 }
