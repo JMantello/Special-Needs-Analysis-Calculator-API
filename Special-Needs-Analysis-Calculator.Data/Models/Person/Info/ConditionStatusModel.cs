@@ -10,8 +10,8 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.Person.Info
     {
         public bool IsConditionPermanent { get; set; }
         public bool? IsConditionExpectedToLast1Year { get; set; }  // only necesary if above is false
-
         public bool IsLegallyBlind { get; set; }
+        public bool IsLegallyDisabled { get; set; }
         public bool IsAbleGroceryShop { get; set; }
         public bool IsAbleDrive { get; set; }
         public bool IsAbleWork { get; set; }

@@ -1,5 +1,4 @@
-﻿using Special_Needs_Analysis_Calculator.Dat.Models.People;
-using Special_Needs_Analysis_Calculator.Data.Models.People;
+﻿using Special_Needs_Analysis_Calculator.Data.Models.People;
 using Special_Needs_Analysis_Calculator.Data.Models.Person.Info;
 using System;
 using System.Collections.Generic;
@@ -9,133 +8,114 @@ using System.Threading.Tasks;
 
 namespace Special_Needs_Analysis_Calculator.Domain
 {
-    public enum DisabilityType
-    {
-        Temporary,
-        Student,
-        Permanent
-    }
     public interface ISpecialNeedsCalculator
     {
-        ///// <summary>
-        ///// Determine how long the beneficiary will remain a dependent.
-        ///// </summary>
-        ///// <returns>int Years</returns>
-        //public int RemainingDependancy();
-
-        ///// <summary>
-        ///// Adds the monthly costs of beneficiary.
-        ///// </summary>
-        ///// <param name="foodMonthly"></param>
-        ///// <param name="entertainmentMonthly"></param>
-        ///// <param name="transportationMonthly"></param>
-        ///// <param name="medicalCopayMonthly"></param>
-        ///// <param name="clothingMonthly"></param>
-        ///// <param name="housingCareMonthly"></param>
-        ///// <param name="therapyMonthly"></param>
-        ///// <param name="otherMonthly"></param>
-        ///// <returns>The dependent's monthly expenses</returns>
-        //public double CostMonthly(double foodMonthly, double entertainmentMonthly, double transportationMonthly, double medicalCopayMonthly, double clothingMonthly, double housingCareMonthly, double therapyMonthly, double otherMonthly);
-
-        ///// <summary>
-        ///// The overall cost of the dependent throughout their life.
-        ///// </summary>
-        ///// <param name="costMonthly"></param>
-        ///// <returns></returns>
-        //public double OverallMonetaryCost(double costMonthly);
-
-
+        public int GetRemainingDependency();
+        public double GetCostMonthly();
+        public double OverallMonetaryCost();
+        public bool IsUnder65();
+        public bool SpecialNeedsTrustEligible();
+        public bool SupplementalSecurityIncomeEligible();
+        public bool SocialSecurityDisabilityInsuranceEligible();
+        public double NetSocialSecurityDisabilityInsurance();
+        public double MaxABLEContribution();
+        public double RecomendedABLEContribution();
+        public double ValueOfAnnualContribution();
     }
 
     public class SpecialNeedsCalculator : ISpecialNeedsCalculator
     {
-        public BeneficiaryModel BeneficiaryModel { get; set; }
-
-        // Client information
-        public int clientAge { get; set; }
-        public int expectedLifespan { get; set; }
-        public DisabilityType disabilityType { get; set; }
-
-        // Monthly Expenses
-        public double foodMonthly { get; set; }
-        public double entertainmentMonthly { get; set; }
-        public double transportationMonthly { get; set; }
-        public double medicalCopayMonthly { get; set; }
-        public double clothingMonthly { get; set; }
-        public double housingCareMonthly { get; set; }
-        public double therapyMonthly { get; set; }
-        public double otherMonthly { get; set; }
-
-        // Eligability 
-        public bool qualifySNT { get; set; }
-
-        // Existing beneficiary model
-        public bool IsStudent { get; set; }
-        public bool IsLegallyBlind { get; set; }
-        public bool IsDisabled { get; set; }
-        public double Income { get; set; }
-        public double SSDI_Monthly { get; set; }
-        public double FundRate { get; set; }
-        public double Max_ABLE_Holdings { get; set; }
+        public BeneficiaryModel BM { get; set; }
 
         // Fields which we only need to calculate once
         public double RemainingDependency { get; set; }
+        public double CostMonthly { get; set; }
 
         public SpecialNeedsCalculator(BeneficiaryModel beneficiaryModel)
         {
-
+            BM = beneficiaryModel;
+            RemainingDependency = GetRemainingDependency();
+            CostMonthly = GetCostMonthly();
         }
 
-        public int RemainingDependancy() // Store this in a field, so we don't have to always recalculate
+        public int GetRemainingDependency()
         {
-            if (disabilityType == DisabilityType.Permanent)
-                return expectedLifespan - clientAge;
-            else if (IsStudent)
-                return Math.Max(24 - clientAge, 0);
-            return Math.Max(19 - clientAge, 0);
+            if (BM.ConditionStatus.IsConditionPermanent)
+                return BM.ExpectedLifespan - BM.Age;
+            else if (BM.IsStudent)
+                return Math.Max(24 - BM.Age, 0);
+            return Math.Max(19 - BM.Age, 0);
         }
 
-        public double CostMonthly()
+        public double GetCostMonthly()
         {
-            double costMonthly = foodMonthly + entertainmentMonthly + transportationMonthly + medicalCopayMonthly + clothingMonthly + housingCareMonthly + therapyMonthly + otherMonthly;
+            double costMonthly =
+                BM.Expenses.CostOfHousing +
+                BM.Expenses.CostOfFood +
+                BM.Expenses.CostOfUtilities +
+                BM.Expenses.CostOfTransportation +
+                BM.Expenses.CostOfMedicalCoPay +
+                BM.Expenses.CostOfEntertainment +
+                BM.Expenses.CostOfConditionCare +
+                BM.Expenses.CostOther;
+
             return costMonthly;
         }
 
         public double OverallMonetaryCost()
         {
-            double costTotal = CostMonthly() * 12 * RemainingDependancy();
+            double costTotal = CostMonthly * 12 * RemainingDependency;
             return costTotal;
         }
 
-        public bool isUnder65()
+        public bool IsUnder65()
         {
-            return clientAge < 65;
+            return BM.Age < 65;
         }
 
-        public bool SNT_Eligable() // Special Needs Trust
+        public bool SpecialNeedsTrustEligible()
         {
-            return isUnder65() && qualifySNT;
+            return IsUnder65() && true; // Does qualify?
         }
 
-        public bool SSI_Eligable() // Supplemental Security Income Payments
+        public bool SupplementalSecurityIncomeEligible()
         {
-            return (isUnder65() || IsLegallyBlind || IsDisabled) && Income < 2000;
+            double monthlyHouseholdIncome = (double)BM.YearlyHouseHoldIncome / 12;
+
+            return (IsUnder65() || BM.ConditionStatus.IsLegallyBlind || BM.ConditionStatus.IsLegallyDisabled) && monthlyHouseholdIncome < 2000;
         }
 
-        public bool SSDI_Eligable() // Social Security Disability Insurance
+        public bool SocialSecurityDisabilityInsuranceEligible()
         {
             throw new NotImplementedException();
         }
 
-        public double Net_SSDI() 
+        public double NetSocialSecurityDisabilityInsurance()
         {
-            return SSDI_Monthly * 12 * RemainingDependancy(); 
+            return BM.SocialSecurityDisabilityInsuranceMonthly * 12 * RemainingDependency;
         }
 
-        public double Max_ABLE_Contribution()
+        public double MaxABLEContribution()
         {
-            return Max_ABLE_Holdings * FundRate * Math.Pow(1 + FundRate, RemainingDependancy()) / Math.Pow(1 + FundRate, RemainingDependancy()) - 1;
+            return BM.AnnualABLEContributions * BM.ABLEFundRate * Math.Pow(1 + BM.ABLEFundRate, RemainingDependency) / (Math.Pow(1 + BM.ABLEFundRate, RemainingDependency) - 1);
         }
 
+        public double RecomendedABLEContribution()
+        {
+            double recommendedContribution = 100000 * BM.ABLEFundRate *
+                Math.Pow(1 + BM.ABLEFundRate, RemainingDependency) /
+                (Math.Pow(1 + BM.ABLEFundRate, RemainingDependency) - 1);
+
+            return recommendedContribution;
+        }
+
+        public double ValueOfAnnualContribution()
+        {
+            double able = BM.AnnualABLEContributions *
+                (Math.Pow(1 + BM.ABLEFundRate, RemainingDependency) - 1) /
+                BM.ABLEFundRate;
+
+            return able;
+        }
     }
 }
