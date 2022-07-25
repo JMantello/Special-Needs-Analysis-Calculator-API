@@ -85,6 +85,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
             return (IsUnder65() || BM.ConditionStatus.IsLegallyBlind || BM.ConditionStatus.IsLegallyDisabled) && monthlyHouseholdIncome < 2000;
         }
 
+        // Check
         public bool SocialSecurityDisabilityInsuranceEligible()
         {
             throw new NotImplementedException();
@@ -109,6 +110,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
             return recommendedContribution;
         }
 
+        // Check, what is this doing?
         public double ValueOfAnnualContribution()
         {
             double able = BM.AnnualABLEContributions *
