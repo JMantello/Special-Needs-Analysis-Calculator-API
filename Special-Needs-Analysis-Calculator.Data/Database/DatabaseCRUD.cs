@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Special_Needs_Analysis_Calculator.Data.Database
 {
-    public interface IDatabaseCrud
+    public interface IDatabaseCRUD
     {
         public Task<bool> CreateUser(CreateUserModel createUserModel);
         public Task<UserDocument?> FindUserBySessionToken(string sessionToken);
@@ -23,7 +23,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
     }
 
     // Singleton
-    public class DatabaseCRUD : IDatabaseCrud
+    public class DatabaseCRUD : IDatabaseCRUD
     {
         private readonly SpecialNeedsAnalysisDbContext context;
 
