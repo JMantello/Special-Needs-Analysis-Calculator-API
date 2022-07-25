@@ -20,7 +20,6 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         public Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel);
         public Task<string?> Login(UserLogin loginRequest);
         public Task<bool> Logout(SessionTokenModel session);
-
     }
 
     // Singleton
