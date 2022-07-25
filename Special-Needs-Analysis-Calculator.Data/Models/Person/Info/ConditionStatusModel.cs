@@ -15,7 +15,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.Person.Info
         public bool IsAbleGroceryShop { get; set; }
         public bool IsAbleDrive { get; set; }
         public bool IsAbleWork { get; set; }
-        public int ExpectedIndependnetYear { get; set; }
+        public int ExpectedIndependentYear { get; set; }
 
         public ConditionStatusModel () { }
 
@@ -27,7 +27,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.Person.Info
             this.IsAbleGroceryShop = isAbleGroceryShop;
             this.IsAbleDrive = isAbleDrive;
             this.IsAbleWork = IsAbleWork;
-            this.ExpectedIndependnetYear = ExpectedIndependnetYear;
+            this.ExpectedIndependentYear = ExpectedIndependnetYear;
         }
     }
 }
