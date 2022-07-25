@@ -12,7 +12,7 @@ builder.Services.AddDbContext<SpecialNeedsAnalysisDbContext>(options => {
     options.UseNpgsql(builder.Configuration.GetConnectionString("SpecialNeedsAnalysisDb"));
 });
 
-builder.Services.AddTransient<IDatabaseCrud, DatabaseCRUD>();
+builder.Services.AddTransient<IDatabaseCRUD, DatabaseCRUD>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -33,6 +33,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Seed();
+//app.Seed();
 
 app.Run();

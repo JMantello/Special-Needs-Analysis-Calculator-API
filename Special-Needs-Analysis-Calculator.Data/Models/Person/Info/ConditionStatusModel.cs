@@ -9,16 +9,25 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.Person.Info
     public class ConditionStatusModel
     {
         public bool IsConditionPermanent { get; set; }
+        public bool? IsConditionExpectedToLast1Year { get; set; }  // only necesary if above is false
+
         public bool IsLegallyBlind { get; set; }
         public bool IsAbleGroceryShop { get; set; }
         public bool IsAbleDrive { get; set; }
+        public bool IsAbleWork { get; set; }
+        public int ExpectedIndependnetYear { get; set; }
 
-        public ConditionStatusModel (bool isConditionPermanent, bool isLegallyBlind, bool isAbleGroceryShop, bool isAbleDrive)
+        public ConditionStatusModel () { }
+
+        public ConditionStatusModel (bool isConditionPermanent, bool? IsConditionExpectedToLast1Year, bool isLegallyBlind, bool isAbleGroceryShop, bool isAbleDrive, bool IsAbleWork, int ExpectedIndependnetYear)
         {
             this.IsConditionPermanent = isConditionPermanent;
+            this.IsConditionExpectedToLast1Year = IsConditionExpectedToLast1Year;
             this.IsLegallyBlind = isLegallyBlind;
             this.IsAbleGroceryShop = isAbleGroceryShop;
             this.IsAbleDrive = isAbleDrive;
+            this.IsAbleWork = IsAbleWork;
+            this.ExpectedIndependnetYear = ExpectedIndependnetYear;
         }
     }
 }

@@ -10,10 +10,10 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
     [Route("[controller]")]
     public class SpecialNeedsAnalysisController : Controller
     {
-        private readonly IDatabaseCrud context;
+        private readonly IDatabaseCRUD context;
 
 
-        public SpecialNeedsAnalysisController(IDatabaseCrud context)
+        public SpecialNeedsAnalysisController(IDatabaseCRUD context)
         {
             this.context = context;
         }
