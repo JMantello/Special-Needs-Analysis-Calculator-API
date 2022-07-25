@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace Special_Needs_Analysis_Calculator.Data.Database
 {
     public static class DataSeeder
-    {
+    {/*
         public static void Seed(this IHost host)
         {
             using var scope = host.Services.CreateScope();
@@ -152,7 +152,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
                 PrimaryPhoneNumber = "465-823-9554"
             }));
 
-            context.SaveChanges();
-        }
+            context.SaveChanges();*/
+        //}
     }
 }

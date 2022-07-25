@@ -15,16 +15,18 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.Person.Info
         public int CostOfMedicalCoPay { get; set; }
         public int CostOfEntertainment { get; set; }
         public int CostOfConditionCare { get; set; }
+        public int CostOther { get; set; }
 
-        public ExpensesModel (int CostOfHousing, int CostOfFood, int CostOfUtilies, int CostOfTransportation, int CostOfMedicalCoPay, int CostOfEntertainment, int CostOfConditionCare)
+        public ExpensesModel (int CostOfHousing, int CostOfFood, int CostOfUtilities, int CostOfTransportation, int CostOfMedicalCoPay, int CostOfEntertainment, int CostOfConditionCare, int CostOther)
         {
             this.CostOfHousing = CostOfHousing;
             this.CostOfFood = CostOfFood;
-            this.CostOfUtilities = CostOfUtilies;
+            this.CostOfUtilities = CostOfUtilities;
             this.CostOfTransportation = CostOfTransportation;
             this.CostOfMedicalCoPay = CostOfMedicalCoPay;
             this.CostOfEntertainment = CostOfEntertainment;
             this.CostOfConditionCare = CostOfConditionCare;
+            this.CostOther = CostOther;
         }
     }
 }
