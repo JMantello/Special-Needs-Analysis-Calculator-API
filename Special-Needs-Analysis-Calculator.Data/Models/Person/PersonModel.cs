@@ -10,8 +10,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.Person
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public int YearlyHouseHoldIncome { get; set; }
-        public int NumPeopleInHousHold { get; set; }
-        public int Age { get; set; }
+        public double YearlyIncome { get; set; }
+        //public int NumPeopleInHousHold { get; set; } // Check if needed
     }
 }
