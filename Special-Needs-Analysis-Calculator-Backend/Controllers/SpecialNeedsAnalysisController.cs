@@ -2,6 +2,8 @@
 using Special_Needs_Analysis_Calculator.Data.Database;
 using Special_Needs_Analysis_Calculator.Data.Models.InputModels;
 using Special_Needs_Analysis_Calculator.Data.Models.Login;
+using Special_Needs_Analysis_Calculator.Data.Models.People;
+using Special_Needs_Analysis_Calculator.Domain;
 
 namespace Special_Needs_Analysis_Calculator_Backend.Controllers
 {
@@ -70,7 +72,7 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
 
         [HttpPost("Login")]
         public async Task<IActionResult> Login(UserLogin loginRequest)
-        {
+        { // Check if already logged in to not make another session token
             if (!ModelState.IsValid) return BadRequest();
 
             string? sessionId = await context.Login(loginRequest);
@@ -95,6 +97,35 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
             return NotFound();
+        }
+
+        [HttpPost("CalculateBeneficiaries")]
+        public async Task<IActionResult> CalculateBeneficiaries(string sessionId)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+            List<BeneficiaryModel> beneficiaries = await context.FindBeneficiariesBySessionToken(sessionId);
+            return NotFound();
+        }
+
+
+        [HttpPost("GetCalculation")]
+        public async Task<IActionResult> GetCalculation(SessionTokenModel session)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            // Get beneficiaries from database
+            List<BeneficiaryModel>? beneficiaries = await context.FindBeneficiariesBySessionToken(session.SessionToken);
+            if (beneficiaries == null) return NotFound();
+
+            // Get calculations based on the beneficiaries
+            List<BeneficiaryCalculation> beneficiaryCalculations = new List<BeneficiaryCalculation>();
+            foreach (BeneficiaryModel beneficiary in beneficiaries)
+            {
+                SpecialNeedsCalculator calculator = new SpecialNeedsCalculator(beneficiary);
+                beneficiaryCalculations.Add(calculator.Results());
+            }
+
+            return Json(beneficiaryCalculations);
         }
     }
 }

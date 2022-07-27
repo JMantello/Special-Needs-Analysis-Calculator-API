@@ -15,6 +15,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
     {
         public Task<bool> CreateUser(CreateUserModel createUserModel);
         public Task<UserDocument?> FindUserBySessionToken(string sessionToken);
+        public Task<List<BeneficiaryModel>?> FindBeneficiariesBySessionToken(string sessionToken);
         public Task<bool> UpdateUser(UpdateUserModel updateUserModel);
         public Task<bool> DeleteUser(string sessionToken);
         public Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel);
@@ -71,6 +72,15 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             UserDocument? user = await context.Users.FindAsync(session.Email);
             return user;
         }
+
+        public async Task<List<BeneficiaryModel>?> FindBeneficiariesBySessionToken(string sessionToken)
+        {
+            UserDocument? userDocument = await FindUserBySessionToken(sessionToken);
+            if (userDocument == null) return null;
+            UserModel? user = userDocument.User;
+            return user.Beneficiaries;
+        }
+
 
         /// <summary>
         /// Updates user information inside the User's table

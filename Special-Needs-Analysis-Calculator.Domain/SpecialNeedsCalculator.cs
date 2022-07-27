@@ -1,10 +1,4 @@
 ﻿using Special_Needs_Analysis_Calculator.Data.Models.People;
-using Special_Needs_Analysis_Calculator.Data.Models.Person.Info;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Special_Needs_Analysis_Calculator.Domain
 {
@@ -20,7 +14,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
         public double NetSocialSecurityDisabilityInsurance();
         public double MaxABLEContribution();
         public double RecomendedABLEContribution();
-        public double ValueOfAnnualContribution();
+        public double ABLELifetimeValue();
     }
 
     public class SpecialNeedsCalculator : ISpecialNeedsCalculator
@@ -50,14 +44,14 @@ namespace Special_Needs_Analysis_Calculator.Domain
         public double GetCostMonthly()
         {
             double costMonthly =
-                BM.Expenses.CostOfHousing +
-                BM.Expenses.CostOfFood +
-                BM.Expenses.CostOfUtilities +
-                BM.Expenses.CostOfTransportation +
-                BM.Expenses.CostOfMedicalCoPay +
-                BM.Expenses.CostOfEntertainment +
-                BM.Expenses.CostOfConditionCare +
-                BM.Expenses.CostOther;
+                BM.Expenses.Housing +
+                BM.Expenses.Food +
+                BM.Expenses.Utilities +
+                BM.Expenses.Transportation +
+                BM.Expenses.MedicalCoPay +
+                BM.Expenses.Entertainment +
+                BM.Expenses.ConditionCare +
+                BM.Expenses.Other;
 
             return costMonthly;
         }
@@ -75,29 +69,33 @@ namespace Special_Needs_Analysis_Calculator.Domain
 
         public bool SpecialNeedsTrustEligible()
         {
-            return IsUnder65() && true; // Does qualify?
+            return IsUnder65();
         }
-
+        // Need Net SSI
         public bool SupplementalSecurityIncomeEligible()
         {
-            double monthlyHouseholdIncome = (double)BM.YearlyHouseHoldIncome / 12;
+            // Individual income, not household
+            double monthlyIncome = (double)BM.YearlyIncome / 12;
 
-            return (IsUnder65() || BM.ConditionStatus.IsLegallyBlind || BM.ConditionStatus.IsLegallyDisabled) && monthlyHouseholdIncome < 2000;
+            return (IsUnder65() || BM.ConditionStatus.IsLegallyBlind || BM.ConditionStatus.IsLegallyDisabled) && monthlyIncome < 2000;
         }
 
-        // Check
         public bool SocialSecurityDisabilityInsuranceEligible()
         {
-            throw new NotImplementedException();
+            return IsUnder65();
         }
 
+
+        // Returning net SSI? Need net SSDI
         public double NetSocialSecurityDisabilityInsurance()
         {
             return BM.SocialSecurityDisabilityInsuranceMonthly * 12 * RemainingDependency;
         }
 
+        // Broken
         public double MaxABLEContribution()
         {
+            //Max Holdings?
             return BM.AnnualABLEContributions * BM.ABLEFundRate * Math.Pow(1 + BM.ABLEFundRate, RemainingDependency) / (Math.Pow(1 + BM.ABLEFundRate, RemainingDependency) - 1);
         }
 
@@ -110,14 +108,31 @@ namespace Special_Needs_Analysis_Calculator.Domain
             return recommendedContribution;
         }
 
-        // Check, what is this doing?
-        public double ValueOfAnnualContribution()
+        public double ABLELifetimeValue()
         {
-            double able = BM.AnnualABLEContributions *
+            double ableValue = BM.AnnualABLEContributions *
                 (Math.Pow(1 + BM.ABLEFundRate, RemainingDependency) - 1) /
                 BM.ABLEFundRate;
 
-            return able;
+            return ableValue;
+        }
+
+        public BeneficiaryCalculation Results()
+        {
+            return new BeneficiaryCalculation
+            {
+                RemainingDependency = GetRemainingDependency(),
+                CostMonthly = GetCostMonthly(),
+                OverallMonetaryCost = OverallMonetaryCost(),
+                IsUnder65 = IsUnder65(),
+                SpecialNeedsTrustEligible = SpecialNeedsTrustEligible(),
+                SupplementalSecurityIncomeEligible = SupplementalSecurityIncomeEligible(),
+                SocialSecurityDisabilityInsuranceEligible = SocialSecurityDisabilityInsuranceEligible(),
+                NetSocialSecurityDisabilityInsurance = NetSocialSecurityDisabilityInsurance(),
+                MaxABLEContribution = MaxABLEContribution(),
+                RecomendedABLEContribution = RecomendedABLEContribution(),
+                ABLELifetimeValue = ABLELifetimeValue()
+            };
         }
     }
 }
