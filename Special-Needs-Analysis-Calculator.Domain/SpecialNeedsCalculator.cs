@@ -7,13 +7,14 @@ namespace Special_Needs_Analysis_Calculator.Domain
         public int GetRemainingDependency();
         public double GetCostMonthly();
         public double OverallMonetaryCost();
+        public double ExtraMonetaryCost();
         public bool IsUnder65();
         public bool SpecialNeedsTrustEligible();
         public bool SupplementalSecurityIncomeEligible();
         public bool SocialSecurityDisabilityInsuranceEligible();
         public double NetSocialSecurityDisabilityInsurance();
+        public double NetSupplementalSecurityIncome();
         public double MaxABLEContribution();
-        public double RecomendedABLEContribution();
         public double ABLELifetimeValue();
     }
 
@@ -62,6 +63,11 @@ namespace Special_Needs_Analysis_Calculator.Domain
             return costTotal;
         }
 
+        public double ExtraMonetaryCost()
+        {
+            return CostMonthly - (412 + 243 + 819 + 161 + 480); // temp averages might change later
+        }
+
         public bool IsUnder65()
         {
             return BM.Age < 65;
@@ -71,7 +77,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
         {
             return IsUnder65();
         }
-        // Need Net SSI
+        
         public bool SupplementalSecurityIncomeEligible()
         {
             // Individual income, not household
@@ -80,32 +86,27 @@ namespace Special_Needs_Analysis_Calculator.Domain
             return (IsUnder65() || BM.ConditionStatus.IsLegallyBlind || BM.ConditionStatus.IsLegallyDisabled) && monthlyIncome < 2000;
         }
 
+        public double NetSupplementalSecurityIncome()
+        {
+            return BM.SupplementalSecurityIncomeMonthly * 12 * RemainingDependency;
+        }
+
+        // Business analysit?
         public bool SocialSecurityDisabilityInsuranceEligible()
         {
-            return IsUnder65();
+            return IsUnder65();     // basically the only requirement?
         }
 
-
-        // Returning net SSI? Need net SSDI
         public double NetSocialSecurityDisabilityInsurance()
         {
-            return BM.SocialSecurityDisabilityInsuranceMonthly * 12 * RemainingDependency;
+            return BM.SocialSecurityDisabilityInsuranceMonthly * 12 * RemainingDependency;  
         }
 
-        // Broken
         public double MaxABLEContribution()
         {
-            //Max Holdings?
-            return BM.AnnualABLEContributions * BM.ABLEFundRate * Math.Pow(1 + BM.ABLEFundRate, RemainingDependency) / (Math.Pow(1 + BM.ABLEFundRate, RemainingDependency) - 1);
-        }
-
-        public double RecomendedABLEContribution()
-        {
-            double recommendedContribution = 100000 * BM.ABLEFundRate *
-                Math.Pow(1 + BM.ABLEFundRate, RemainingDependency) /
-                (Math.Pow(1 + BM.ABLEFundRate, RemainingDependency) - 1);
-
-            return recommendedContribution;
+            var numerator = BM.ABLEMaxHoldings * BM.ABLEFundRate * Math.Pow((1 + BM.ABLEFundRate), GetRemainingDependency());
+            var denomenator = Math.Pow((1 + BM.ABLEFundRate), GetRemainingDependency()) -1;
+            return numerator / denomenator;
         }
 
         public double ABLELifetimeValue()
@@ -124,13 +125,14 @@ namespace Special_Needs_Analysis_Calculator.Domain
                 RemainingDependency = GetRemainingDependency(),
                 CostMonthly = GetCostMonthly(),
                 OverallMonetaryCost = OverallMonetaryCost(),
+                ExtraMonthlyCostSpecialNeedsDependent = ExtraMonetaryCost(),
                 IsUnder65 = IsUnder65(),
                 SpecialNeedsTrustEligible = SpecialNeedsTrustEligible(),
                 SupplementalSecurityIncomeEligible = SupplementalSecurityIncomeEligible(),
+                NetSupplementalSecurityIncome = NetSupplementalSecurityIncome(),
                 SocialSecurityDisabilityInsuranceEligible = SocialSecurityDisabilityInsuranceEligible(),
                 NetSocialSecurityDisabilityInsurance = NetSocialSecurityDisabilityInsurance(),
                 MaxABLEContribution = MaxABLEContribution(),
-                RecomendedABLEContribution = RecomendedABLEContribution(),
                 ABLELifetimeValue = ABLELifetimeValue()
             };
         }
