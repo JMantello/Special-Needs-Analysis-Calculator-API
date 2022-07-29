@@ -31,6 +31,9 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
 
+            var status = createUserModel.CheckInput(createUserModel); // validate input
+            if (status != "") return BadRequest(status);
+
             bool success = await context.CreateUser(createUserModel);
 
             if(success) return Ok(createUserModel);

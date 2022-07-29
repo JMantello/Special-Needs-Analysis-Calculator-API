@@ -8,6 +8,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.InputModels
         public string CheckInput(CreateUserModel userModel);
         public bool IsValidName(string name);
         public bool IsValidEmail(string email);
+        public bool IsValidPhone(string PhoneNumber);
     }
 
     public class CreateUserModel : ICreateUserModel
@@ -32,6 +33,14 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.InputModels
                 return "Invalid email format";
             }
             else return "";
+
+            // phone validation
+            var PrimaryPhone = userModel.UserModel.PrimaryPhoneNumber;
+            var SecondaryPhone = userModel.UserModel.SecondaryPhoneNumber;
+            if(!IsValidPhone(PrimaryPhone) || !IsValidPhone(SecondaryPhone))
+            {
+                return "Invalid Phone format";
+            }
         }
 
         public bool IsValidName(string Name)
@@ -42,7 +51,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.InputModels
             else return false;
         }
 
-        public bool IsValidEmail(string email) // not my code
+        public bool IsValidEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
                 return false;
@@ -73,6 +82,19 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.InputModels
             {
                 return Regex.IsMatch(email,
                     @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+                    RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
+        }
+
+        public bool IsValidPhone(string PhoneNumber)
+        {
+            try
+            {
+                return Regex.IsMatch(PhoneNumber, @"^[1-9]{3}[-][1-9]{3}[-][1-9]{4}$",
                     RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
             }
             catch (RegexMatchTimeoutException)
