@@ -33,6 +33,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
             CostMonthly = GetCostMonthly();
         }
 
+        // don't want expected lifetime to be less than their current age
         public int GetRemainingDependency()
         {
             if (BM.ConditionStatus.IsConditionPermanent)
@@ -91,7 +92,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
             return BM.SupplementalSecurityIncomeMonthly * 12 * RemainingDependency;
         }
 
-        // Business analysit?
+        // change
         public bool SocialSecurityDisabilityInsuranceEligible()
         {
             return IsUnder65();     // basically the only requirement?

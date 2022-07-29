@@ -23,6 +23,5 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.People
         public double ABLEFundRate { get; set; }
         public ConditionStatusModel? ConditionStatus { get; set; }
         public ExpensesModel? Expenses { get; set; }
-
     }
 }

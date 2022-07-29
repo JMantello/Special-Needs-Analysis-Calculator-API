@@ -64,9 +64,11 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
 
-            bool success = await context.AddBeneficiary(addBeneficiaryModel);
+            var status = addBeneficiaryModel.CheckInput(addBeneficiaryModel.BeneficiaryModel);
+            if (status != "") return BadRequest(status);
 
-            if (success) return Ok();
+            bool success = await context.AddBeneficiary(addBeneficiaryModel);
+            if (success) return Ok(addBeneficiaryModel);
             else return BadRequest();
         }
 
