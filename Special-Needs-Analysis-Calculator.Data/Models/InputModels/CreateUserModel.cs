@@ -32,15 +32,20 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.InputModels
             {
                 return "Invalid email format";
             }
-            else return "";
 
             // phone validation
             var PrimaryPhone = userModel.UserModel.PrimaryPhoneNumber;
             var SecondaryPhone = userModel.UserModel.SecondaryPhoneNumber;
-            if(!IsValidPhone(PrimaryPhone) || !IsValidPhone(SecondaryPhone))
+            if(!IsValidPhone(PrimaryPhone))
             {
-                return "Invalid Phone format";
+                return "Invalid Primary Phone format";
             }
+            else if (SecondaryPhone != null && !IsValidPhone(SecondaryPhone))
+            {
+                return "Invalid Secondary Phone format";
+            }
+
+            return "";  // input has been successfully validated
         }
 
         public bool IsValidName(string Name)
@@ -95,7 +100,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.InputModels
             try
             {
                 return Regex.IsMatch(PhoneNumber, @"^[1-9]{3}[-][1-9]{3}[-][1-9]{4}$",
-                    RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+                RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
             }
             catch (RegexMatchTimeoutException)
             {
