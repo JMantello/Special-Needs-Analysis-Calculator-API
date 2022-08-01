@@ -134,7 +134,11 @@ namespace Special_Needs_Analysis_Calculator.Domain
         /// <returns>true/false</returns>
         public bool SocialSecurityDisabilityInsuranceEligible()
         {
-            return IsUnder65();     // basically the only requirement?
+            if (!BM.IsEmployed) return false;
+            else if (BM.ConditionStatus == null || !BM.ConditionStatus.IsLegallyDisabled) return false;
+            else if (!BM.ConditionStatus.IsLegallyBlind && BM.YearlyIncome >= 1350) return false;  // not blind income cutoff
+            else if (BM.ConditionStatus.IsLegallyBlind && BM.YearlyIncome >= 2260) return false;   // blind income cutoff
+            else return true;
         }
 
         /// <summary>
