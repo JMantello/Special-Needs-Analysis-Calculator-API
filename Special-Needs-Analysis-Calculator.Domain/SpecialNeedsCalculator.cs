@@ -106,15 +106,15 @@ namespace Special_Needs_Analysis_Calculator.Domain
 
         public double MaxABLEContribution()
         {
-            var Numerator = BM.ABLEMaxHoldings * BM.ABLEFundRate * Math.Pow((1 + BM.ABLEFundRate), GetRemainingDependency());
-            var Denomenator = Math.Pow((1 + BM.ABLEFundRate), GetRemainingDependency()) -1;
+            var Numerator = BM.ABLEMaxHoldings * BM.ABLEFundRate * Math.Pow((1 + BM.ABLEFundRate), RemainingDependency);
+            var Denomenator = Math.Pow((1 + BM.ABLEFundRate), RemainingDependency) -1;
             return Numerator / Denomenator;
         }
 
         public double RecommendedABLEContribution()
         {
-            var Numerator = 100000 * BM.ABLEFundRate * (Math.Pow((1 + BM.ABLEFundRate), GetRemainingDependency()));
-            var Denomenator = (Math.Pow((1+BM.ABLEFundRate), GetRemainingDependency())) - 1;
+            var Numerator = 100000 * BM.ABLEFundRate * (Math.Pow((1 + BM.ABLEFundRate), RemainingDependency));
+            var Denomenator = (Math.Pow((1+BM.ABLEFundRate), RemainingDependency)) - 1;
             return Numerator / Denomenator;
         }
 
