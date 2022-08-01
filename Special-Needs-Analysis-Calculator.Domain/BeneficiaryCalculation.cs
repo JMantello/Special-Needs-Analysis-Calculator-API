@@ -19,6 +19,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
         public bool SocialSecurityDisabilityInsuranceEligible { get; set; }
         public double NetSocialSecurityDisabilityInsurance { get; set; }
         public double MaxABLEContribution { get; set; }
+        public double RecommendedABLEContribution { get; set; }
         public double ABLELifetimeValue { get; set; }
         
     }

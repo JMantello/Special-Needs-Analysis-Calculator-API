@@ -15,6 +15,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
         public double NetSocialSecurityDisabilityInsurance();
         public double NetSupplementalSecurityIncome();
         public double MaxABLEContribution();
+        public double RecommendedABLEContribution();
         public double ABLELifetimeValue();
     }
 
@@ -105,9 +106,16 @@ namespace Special_Needs_Analysis_Calculator.Domain
 
         public double MaxABLEContribution()
         {
-            var numerator = BM.ABLEMaxHoldings * BM.ABLEFundRate * Math.Pow((1 + BM.ABLEFundRate), GetRemainingDependency());
-            var denomenator = Math.Pow((1 + BM.ABLEFundRate), GetRemainingDependency()) -1;
-            return numerator / denomenator;
+            var Numerator = BM.ABLEMaxHoldings * BM.ABLEFundRate * Math.Pow((1 + BM.ABLEFundRate), GetRemainingDependency());
+            var Denomenator = Math.Pow((1 + BM.ABLEFundRate), GetRemainingDependency()) -1;
+            return Numerator / Denomenator;
+        }
+
+        public double RecommendedABLEContribution()
+        {
+            var Numerator = 100000 * BM.ABLEFundRate * (Math.Pow((1 + BM.ABLEFundRate), GetRemainingDependency()));
+            var Denomenator = (Math.Pow((1+BM.ABLEFundRate), GetRemainingDependency())) - 1;
+            return Numerator / Denomenator;
         }
 
         public double ABLELifetimeValue()
@@ -134,6 +142,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
                 SocialSecurityDisabilityInsuranceEligible = SocialSecurityDisabilityInsuranceEligible(),
                 NetSocialSecurityDisabilityInsurance = NetSocialSecurityDisabilityInsurance(),
                 MaxABLEContribution = MaxABLEContribution(),
+                RecommendedABLEContribution = RecommendedABLEContribution(),
                 ABLELifetimeValue = ABLELifetimeValue()
             };
         }
