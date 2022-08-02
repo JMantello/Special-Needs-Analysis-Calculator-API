@@ -19,6 +19,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         public Task<bool> UpdateUser(UpdateUserModel updateUserModel);
         public Task<bool> DeleteUser(string sessionToken);
         public Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel);
+        public Task<bool> UpdateBeneficiary(UpdateBeneficiaryModel model);
         public Task<string?> Login(UserLogin loginRequest);
         public Task<bool> Logout(SessionTokenModel session);
     }
@@ -132,6 +133,22 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 
             userDocument.User.Beneficiaries.Add(addBeneficiaryModel.BeneficiaryModel);
             
+            context.Users.Update(userDocument);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateBeneficiary(UpdateBeneficiaryModel model)
+        {
+            UserDocument? userDocument = await FindUserBySessionToken(model.SessionToken);
+            if (userDocument == null || userDocument.User.Beneficiaries == null) return false;
+
+            BeneficiaryModel? beneficiary = userDocument.User.Beneficiaries.FirstOrDefault(b => b.Id == model.BeneficiaryModel.Id);
+            if (beneficiary == null) return false;
+
+            userDocument.User.Beneficiaries.Remove(beneficiary);
+            userDocument.User.Beneficiaries.Add(model.BeneficiaryModel);
+
             context.Users.Update(userDocument);
             await context.SaveChangesAsync();
             return true;

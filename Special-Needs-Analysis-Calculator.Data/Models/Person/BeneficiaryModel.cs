@@ -10,6 +10,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.People
 {
     public class BeneficiaryModel : PersonModel
     {
+        public Guid Id { get; set; }
         public int Age { get; set; }
         public string StateOfResidence { get; set; }
         public int ExpectedLifespan { get; set; }
