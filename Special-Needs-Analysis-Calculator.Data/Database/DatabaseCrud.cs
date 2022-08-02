@@ -154,6 +154,10 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 
             if(attemptedLoginCredential.Password != reHashedPassword) return null;
 
+            // If user's already logged in
+            SessionTokenModel? existingSession = await context.Sessions.Where(s => s.Email == loginRequest.Email).FirstOrDefaultAsync();
+            if (existingSession.SessionToken != null) return existingSession.SessionToken;
+
             string sessionToken = Guid.NewGuid().ToString();
 
             await context.Sessions.AddAsync(
