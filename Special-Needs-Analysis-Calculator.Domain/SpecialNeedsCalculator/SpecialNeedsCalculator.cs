@@ -1,25 +1,8 @@
 ﻿using Special_Needs_Analysis_Calculator.Data.Models.People;
 
-namespace Special_Needs_Analysis_Calculator.Domain
+namespace Special_Needs_Analysis_Calculator.Domain.SpecialNeedsCalculator
 {
-    public interface ISpecialNeedsCalculator
-    {
-        public int GetRemainingDependency();
-        public double GetCostMonthly();
-        public double OverallMonetaryCost();
-        public double ExtraMonetaryCost();
-        public bool IsUnder65();
-        public bool SpecialNeedsTrustEligible();
-        public bool SupplementalSecurityIncomeEligible();
-        public bool SocialSecurityDisabilityInsuranceEligible();
-        public double NetSocialSecurityDisabilityInsurance();
-        public double NetSupplementalSecurityIncome();
-        public double MaxABLEContribution();
-        public double RecommendedABLEContribution();
-        public double ABLELifetimeValue();
-    }
-
-    public class SpecialNeedsCalculator : ISpecialNeedsCalculator
+    public class SpecialNeedsCalculator : TemplateSpecialNeedsCalculator
     {
         public BeneficiaryModel BM { get; set; }
 
@@ -40,7 +23,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
         /// expected to be dependent on the user
         /// </summary>
         /// <returns>The amount of years they will be dependent</returns>
-        public int GetRemainingDependency()
+        public override int GetRemainingDependency()
         {
             if (BM.ConditionStatus.IsConditionPermanent)
                 return BM.ExpectedLifespan - BM.Age;
@@ -53,7 +36,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
         /// Finds the monthly finacial cost of a dependent
         /// </summary>
         /// <returns>the monthly cost</returns>
-        public double GetCostMonthly()
+        public override double GetCostMonthly()
         {
             double costMonthly =
                 BM.Expenses.Housing +
@@ -72,7 +55,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
         /// The overall cost of a beneficiary throughout their expected lifespan
         /// </summary>
         /// <returns>cost of beneficiary</returns>
-        public double OverallMonetaryCost()
+        public override double OverallMonetaryCost()
         {
             double costTotal = CostMonthly * 12 * RemainingDependency;
             return costTotal;
@@ -83,7 +66,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
         /// compared to a beneficiary without the additional cost
         /// </summary>
         /// <returns></returns>
-        public double ExtraMonetaryCost()
+        public override double ExtraMonetaryCost()
         {
             return CostMonthly - (412 + 243 + 819 + 161 + 480); // temp averages might change later
         }
@@ -92,7 +75,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
         /// Determines if someone is under 65
         /// </summary>
         /// <returns>true / false</returns>
-        public bool IsUnder65()
+        public override bool IsUnder65()
         {
             return BM.Age < 65;
         }
@@ -102,16 +85,16 @@ namespace Special_Needs_Analysis_Calculator.Domain
         /// Needs Trust
         /// </summary>
         /// <returns>true/false</returns>
-        public bool SpecialNeedsTrustEligible()
+        public override bool SpecialNeedsTrustEligible()
         {
             return IsUnder65();
         }
-        
+
         /// <summary>
         /// Determines if someone is eligable for Supplimental Security Income
         /// </summary>
         /// <returns>true/false</returns>
-        public bool SupplementalSecurityIncomeEligible()
+        public override bool SupplementalSecurityIncomeEligible()
         {
             // Individual income, not household
             double monthlyIncome = (double)BM.YearlyIncome / 12;
@@ -123,7 +106,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
         /// Calculates total income from Suppimental Security
         /// </summary>
         /// <returns>income total</returns>
-        public double NetSupplementalSecurityIncome()
+        public override double NetSupplementalSecurityIncome()
         {
             return BM.SupplementalSecurityIncomeMonthly * 12 * RemainingDependency;
         }
@@ -132,7 +115,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
         /// Determines if someone is eligable for Social Security Disability Insurance
         /// </summary>
         /// <returns>true/false</returns>
-        public bool SocialSecurityDisabilityInsuranceEligible()
+        public override bool SocialSecurityDisabilityInsuranceEligible()
         {
             if (!BM.IsEmployed) return false;
             else if (BM.ConditionStatus == null || !BM.ConditionStatus.IsLegallyDisabled) return false;
@@ -145,9 +128,9 @@ namespace Special_Needs_Analysis_Calculator.Domain
         /// Calculates the total Social Security Disability Insurance Income
         /// </summary>
         /// <returns>Insurance Income</returns>
-        public double NetSocialSecurityDisabilityInsurance()
+        public override double NetSocialSecurityDisabilityInsurance()
         {
-            return BM.SocialSecurityDisabilityInsuranceMonthly * 12 * RemainingDependency;  
+            return BM.SocialSecurityDisabilityInsuranceMonthly * 12 * RemainingDependency;
         }
 
         /// <summary>
@@ -155,10 +138,10 @@ namespace Special_Needs_Analysis_Calculator.Domain
         /// without missing out on other money
         /// </summary>
         /// <returns>max amount contribution</returns>
-        public double MaxABLEContribution()
+        public override double MaxABLEContribution()
         {
-            var Numerator = BM.ABLEMaxHoldings * BM.ABLEFundRate * Math.Pow((1 + BM.ABLEFundRate), RemainingDependency);
-            var Denomenator = Math.Pow((1 + BM.ABLEFundRate), RemainingDependency) -1;
+            var Numerator = BM.ABLEMaxHoldings * BM.ABLEFundRate * Math.Pow(1 + BM.ABLEFundRate, RemainingDependency);
+            var Denomenator = Math.Pow(1 + BM.ABLEFundRate, RemainingDependency) - 1;
             return Numerator / Denomenator;
         }
 
@@ -167,10 +150,10 @@ namespace Special_Needs_Analysis_Calculator.Domain
         /// to earn the most amount of money back
         /// </summary>
         /// <returns>reccommended contribution amount</returns>
-        public double RecommendedABLEContribution()
+        public override double RecommendedABLEContribution()
         {
-            var Numerator = 100000 * BM.ABLEFundRate * (Math.Pow((1 + BM.ABLEFundRate), RemainingDependency));
-            var Denomenator = (Math.Pow((1+BM.ABLEFundRate), RemainingDependency)) - 1;
+            var Numerator = 100000 * BM.ABLEFundRate * Math.Pow(1 + BM.ABLEFundRate, RemainingDependency);
+            var Denomenator = Math.Pow(1 + BM.ABLEFundRate, RemainingDependency) - 1;
             return Numerator / Denomenator;
         }
 
@@ -179,7 +162,7 @@ namespace Special_Needs_Analysis_Calculator.Domain
         /// at the end of their lifespan
         /// </summary>
         /// <returns>amount of money in ABLE</returns>
-        public double ABLELifetimeValue()
+        public override double ABLELifetimeValue()
         {
             double ableValue = BM.AnnualABLEContributions *
                 (Math.Pow(1 + BM.ABLEFundRate, RemainingDependency) - 1) /
@@ -193,24 +176,6 @@ namespace Special_Needs_Analysis_Calculator.Domain
         /// in order to be returned in a simpler way
         /// </summary>
         /// <returns>Object that holds all of the results</returns>
-        public BeneficiaryCalculation Results()
-        {
-            return new BeneficiaryCalculation
-            {
-                RemainingDependency = GetRemainingDependency(),
-                CostMonthly = GetCostMonthly(),
-                OverallMonetaryCost = OverallMonetaryCost(),
-                ExtraMonthlyCostSpecialNeedsDependent = ExtraMonetaryCost(),
-                IsUnder65 = IsUnder65(),
-                SpecialNeedsTrustEligible = SpecialNeedsTrustEligible(),
-                SupplementalSecurityIncomeEligible = SupplementalSecurityIncomeEligible(),
-                NetSupplementalSecurityIncome = NetSupplementalSecurityIncome(),
-                SocialSecurityDisabilityInsuranceEligible = SocialSecurityDisabilityInsuranceEligible(),
-                NetSocialSecurityDisabilityInsurance = NetSocialSecurityDisabilityInsurance(),
-                MaxABLEContribution = MaxABLEContribution(),
-                RecommendedABLEContribution = RecommendedABLEContribution(),
-                ABLELifetimeValue = ABLELifetimeValue()
-            };
-        }
+
     }
 }

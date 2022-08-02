@@ -4,6 +4,7 @@ using Special_Needs_Analysis_Calculator.Data.Models.InputModels;
 using Special_Needs_Analysis_Calculator.Data.Models.Login;
 using Special_Needs_Analysis_Calculator.Data.Models.People;
 using Special_Needs_Analysis_Calculator.Domain;
+using Special_Needs_Analysis_Calculator.Domain.SpecialNeedsCalculator;
 
 namespace Special_Needs_Analysis_Calculator_Backend.Controllers
 {
@@ -127,10 +128,11 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             foreach (BeneficiaryModel beneficiary in beneficiaries)
             {
                 SpecialNeedsCalculator calculator = new SpecialNeedsCalculator(beneficiary);
-                beneficiaryCalculations.Add(calculator.Results());
+                beneficiaryCalculations.Add(calculator.TemplateResults());
             }
 
             return Json(beneficiaryCalculations);
+
         }
     }
 }
