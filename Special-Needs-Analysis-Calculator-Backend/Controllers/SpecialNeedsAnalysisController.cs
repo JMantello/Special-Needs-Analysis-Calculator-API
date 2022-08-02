@@ -105,7 +105,7 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
 
-            bool result = await context.Logout(session);
+            bool result = await context.Logout(session.SessionToken);
 
             if (result) return Ok();
             else return Unauthorized();
