@@ -106,16 +106,7 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         }
 
         [HttpPost("CalculateBeneficiaries")]
-        public async Task<IActionResult> CalculateBeneficiaries(string sessionId)
-        {
-            if (!ModelState.IsValid) return BadRequest();
-            List<BeneficiaryModel> beneficiaries = await context.FindBeneficiariesBySessionToken(sessionId);
-            return NotFound();
-        }
-
-
-        [HttpPost("GetCalculation")]
-        public async Task<IActionResult> GetCalculation(SessionTokenModel session)
+        public async Task<IActionResult> CalculateBeneficiaries(SessionTokenModel session)
         {
             if (!ModelState.IsValid) return BadRequest();
 
@@ -132,7 +123,6 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             }
 
             return Json(beneficiaryCalculations);
-
         }
     }
 }
