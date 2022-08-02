@@ -52,7 +52,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.InputModels
         {
             if (Name == null || Name.Length == 0) return false;
             
-            if(Name.Length < 20) return true;
+            if(Name.Length < 25) return true;
             else return false;
         }
 
