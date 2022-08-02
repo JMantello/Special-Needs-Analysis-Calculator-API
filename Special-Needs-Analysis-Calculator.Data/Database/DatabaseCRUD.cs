@@ -131,6 +131,8 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             if (userDocument.User.Beneficiaries == null)
                 userDocument.User.Beneficiaries = new List<BeneficiaryModel>();
 
+            addBeneficiaryModel.BeneficiaryModel.Id = Guid.NewGuid();
+
             userDocument.User.Beneficiaries.Add(addBeneficiaryModel.BeneficiaryModel);
             
             context.Users.Update(userDocument);
