@@ -65,20 +65,23 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// <returns>all the user's information stored in the Users table</returns>
         public async Task<UserDocument?> FindUserBySessionToken(string sessionToken)
         {
+            // get session model
             SessionTokenModel? session = await context.Sessions
                 .Where(s => s.SessionToken == sessionToken).FirstOrDefaultAsync();
-            
             if (session == null) return null;
 
+            // use session to find user
             UserDocument? user = await context.Users.FindAsync(session.Email);
             return user;
         }
 
         public async Task<List<BeneficiaryModel>?> FindBeneficiariesBySessionToken(string sessionToken)
         {
+            // get user's account
             UserDocument? userDocument = await FindUserBySessionToken(sessionToken);
             if (userDocument == null) return null;
-            UserModel? user = userDocument.User;
+            UserModel? user = userDocument.User;   // specify user model
+
             return user.Beneficiaries;
         }
 
@@ -91,11 +94,15 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// <returns>true/false success or failure</returns>
         public async Task<bool> UpdateUser(UpdateUserModel updateUserModel)
         {
+            // get user's account
             UserDocument? userDocument = await FindUserBySessionToken(updateUserModel.SessionToken);
             if (userDocument == null) return false;
+
+            //update user's information
             userDocument.User = updateUserModel.UserModel;
-            context.Users.Update(userDocument); // I wonder if this step is necessary
-            await context.SaveChangesAsync(); // For if SaveChangesAsync takes care of the update.
+            context.Users.Update(userDocument); 
+            await context.SaveChangesAsync(); 
+
             return true;
         }
 
@@ -108,12 +115,17 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// <returns>true/false success or failure</returns>
         public async Task<bool> DeleteUser(string sessionToken)
         {
+            // get user's account
             UserDocument? userDocument = await FindUserBySessionToken(sessionToken);
             if (userDocument == null) return false;
+
             await Logout(sessionToken);
+
+            // set account to in active (temporary delete)
             userDocument.User.IsAccountActive = false;
             context.Users.Update(userDocument);
             await context.SaveChangesAsync();
+
             return true;
         }
 
@@ -126,29 +138,36 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// <returns>true/false success or failure</returns>
         public async Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel)
         {
+            // get user's account
             UserDocument? userDocument = await FindUserBySessionToken(addBeneficiaryModel.SessionToken);
             if (userDocument == null) return false;
 
+            // create Benificiary list
             if (userDocument.User.Beneficiaries == null)
                 userDocument.User.Beneficiaries = new List<BeneficiaryModel>();
 
+            // assign list item unique ID
             addBeneficiaryModel.BeneficiaryModel.Id = Guid.NewGuid();
 
+            // add model information
             userDocument.User.Beneficiaries.Add(addBeneficiaryModel.BeneficiaryModel);
-            
             context.Users.Update(userDocument);
             await context.SaveChangesAsync();
+
             return true;
         }
 
         public async Task<bool> UpdateBeneficiary(UpdateBeneficiaryModel model)
         {
+            // get user's account 
             UserDocument? userDocument = await FindUserBySessionToken(model.SessionToken);
             if (userDocument == null || userDocument.User.Beneficiaries == null) return false;
 
+            // get the beneficary from the user's account
             BeneficiaryModel? beneficiary = userDocument.User.Beneficiaries.FirstOrDefault(b => b.Id == model.BeneficiaryModel.Id);
             if (beneficiary == null) return false;
 
+            // replace account with new account
             userDocument.User.Beneficiaries.Remove(beneficiary);
             userDocument.User.Beneficiaries.Add(model.BeneficiaryModel);
 
@@ -166,23 +185,22 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// <returns>returns a string representing a sessionid or null on faiure</returns>
         public async Task<string?> Login(UserLogin loginRequest)
         {
+            // attempt to find login credentials
             UserLogin? attemptedLoginCredential = await context.UserLogin.Where(ul => ul.Email == loginRequest.Email).FirstOrDefaultAsync();
-
             if (attemptedLoginCredential == null) return null;
 
+            // autheticate password
             string reHashedPassword = SHA256Hash.PasswordHash(loginRequest.Password, attemptedLoginCredential.Salt);
-
             if(attemptedLoginCredential.Password != reHashedPassword) return null;
 
-            // If user's already logged in
+            // determine if user was already logged in
             SessionTokenModel? existingSession = await context.Sessions.Where(s => s.Email == loginRequest.Email).FirstOrDefaultAsync();
             if (existingSession != null) return existingSession.SessionToken;
 
+            // generate a new session verifying successful login
             string sessionToken = Guid.NewGuid().ToString();
 
-            await context.Sessions.AddAsync(
-                new SessionTokenModel(loginRequest.Email, sessionToken));
-
+            await context.Sessions.AddAsync(new SessionTokenModel(loginRequest.Email, sessionToken));
             await context.SaveChangesAsync();
 
             return sessionToken;
@@ -196,8 +214,11 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// <returns>true/false success or failure</returns>
         public async Task<bool> Logout(string sessionToken)
         {
+            // find account on session table
             SessionTokenModel? session = await context.Sessions.Where(session => session.SessionToken == sessionToken).FirstOrDefaultAsync();
             if (session == null) return false;
+
+            // remove entry from session table
             context.Sessions.Remove(session);
             await context.SaveChangesAsync();
             return true;
