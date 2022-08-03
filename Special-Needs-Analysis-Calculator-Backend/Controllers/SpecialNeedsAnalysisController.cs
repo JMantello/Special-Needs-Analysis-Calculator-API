@@ -32,7 +32,7 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
 
-            var status = createUserModel.CheckInput(createUserModel); // validate input
+            var status = CreateUserModel.CheckInput(createUserModel);
             if (status != "") return BadRequest(status);
 
             bool success = await context.CreateUser(createUserModel);
@@ -53,11 +53,11 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         }
 
         [HttpPost("DeleteUser")]
-        public async Task<IActionResult> DeleteUser(string sessionToken)
+        public async Task<IActionResult> DeleteUser(SessionTokenModel session)
         {
             if (!ModelState.IsValid) return BadRequest();
 
-            bool success = await context.DeleteUser(sessionToken);
+            bool success = await context.DeleteUser(session.SessionToken);
 
             if (success) return Ok();
             else return BadRequest();
@@ -68,11 +68,24 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
 
-            var status = addBeneficiaryModel.CheckInput(addBeneficiaryModel.BeneficiaryModel);
+            var status = AddBeneficiaryModel.CheckInput(addBeneficiaryModel.BeneficiaryModel);
             if (status != "") return BadRequest(status);
 
             bool success = await context.AddBeneficiary(addBeneficiaryModel);
             if (success) return Ok(addBeneficiaryModel);
+            else return BadRequest();
+        }
+
+        [HttpPost("UpdateBeneficiary")]
+        public async Task<IActionResult> UpdateBeneficiary(UpdateBeneficiaryModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+
+            var status = AddBeneficiaryModel.CheckInput(model.BeneficiaryModel);
+            if (status != "") return BadRequest(status);
+
+            bool success = await context.UpdateBeneficiary(model);
+            if (success) return Ok(model);
             else return BadRequest();
         }
 
@@ -92,7 +105,7 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
 
-            bool result = await context.Logout(session);
+            bool result = await context.Logout(session.SessionToken);
 
             if (result) return Ok();
             else return Unauthorized();
@@ -106,16 +119,7 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         }
 
         [HttpPost("CalculateBeneficiaries")]
-        public async Task<IActionResult> CalculateBeneficiaries(string sessionId)
-        {
-            if (!ModelState.IsValid) return BadRequest();
-            List<BeneficiaryModel> beneficiaries = await context.FindBeneficiariesBySessionToken(sessionId);
-            return NotFound();
-        }
-
-
-        [HttpPost("GetCalculation")]
-        public async Task<IActionResult> GetCalculation(SessionTokenModel session)
+        public async Task<IActionResult> CalculateBeneficiaries(SessionTokenModel session)
         {
             if (!ModelState.IsValid) return BadRequest();
 
@@ -132,7 +136,6 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             }
 
             return Json(beneficiaryCalculations);
-
         }
     }
 }

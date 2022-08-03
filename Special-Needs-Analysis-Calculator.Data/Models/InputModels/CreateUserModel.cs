@@ -3,20 +3,12 @@ using System.Text.RegularExpressions;
 
 namespace Special_Needs_Analysis_Calculator.Data.Models.InputModels
 {
-    public interface ICreateUserModel
-    {
-        public string CheckInput(CreateUserModel userModel);
-        public bool IsValidName(string name);
-        public bool IsValidEmail(string email);
-        public bool IsValidPhone(string PhoneNumber);
-    }
-
-    public class CreateUserModel : ICreateUserModel
+    public class CreateUserModel
     {
         public UserModel UserModel { get; set; }
         public string Password { get; set; }
 
-        public string CheckInput(CreateUserModel userModel)
+        public static string CheckInput(CreateUserModel userModel)
         {
             // name validation
             var Fistname = userModel.UserModel.FirstName;
@@ -48,15 +40,15 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.InputModels
             return "";  // input has been successfully validated
         }
 
-        public bool IsValidName(string Name)
+        public static bool IsValidName(string Name)
         {
             if (Name == null || Name.Length == 0) return false;
             
-            if(Name.Length < 20) return true;
+            if(Name.Length < 25) return true;
             else return false;
         }
 
-        public bool IsValidEmail(string email)
+        public static bool IsValidEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
                 return false;
@@ -95,7 +87,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.InputModels
             }
         }
 
-        public bool IsValidPhone(string PhoneNumber)
+        public static bool IsValidPhone(string PhoneNumber)
         {
             try
             {

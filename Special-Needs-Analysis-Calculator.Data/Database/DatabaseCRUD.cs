@@ -19,8 +19,9 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         public Task<bool> UpdateUser(UpdateUserModel updateUserModel);
         public Task<bool> DeleteUser(string sessionToken);
         public Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel);
+        public Task<bool> UpdateBeneficiary(UpdateBeneficiaryModel model);
         public Task<string?> Login(UserLogin loginRequest);
-        public Task<bool> Logout(SessionTokenModel session);
+        public Task<bool> Logout(string sessionToken);
     }
 
     // Singleton
@@ -109,6 +110,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         {
             UserDocument? userDocument = await FindUserBySessionToken(sessionToken);
             if (userDocument == null) return false;
+            await Logout(sessionToken);
             userDocument.User.IsAccountActive = false;
             context.Users.Update(userDocument);
             await context.SaveChangesAsync();
@@ -130,8 +132,26 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
             if (userDocument.User.Beneficiaries == null)
                 userDocument.User.Beneficiaries = new List<BeneficiaryModel>();
 
+            addBeneficiaryModel.BeneficiaryModel.Id = Guid.NewGuid();
+
             userDocument.User.Beneficiaries.Add(addBeneficiaryModel.BeneficiaryModel);
             
+            context.Users.Update(userDocument);
+            await context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateBeneficiary(UpdateBeneficiaryModel model)
+        {
+            UserDocument? userDocument = await FindUserBySessionToken(model.SessionToken);
+            if (userDocument == null || userDocument.User.Beneficiaries == null) return false;
+
+            BeneficiaryModel? beneficiary = userDocument.User.Beneficiaries.FirstOrDefault(b => b.Id == model.BeneficiaryModel.Id);
+            if (beneficiary == null) return false;
+
+            userDocument.User.Beneficiaries.Remove(beneficiary);
+            userDocument.User.Beneficiaries.Add(model.BeneficiaryModel);
+
             context.Users.Update(userDocument);
             await context.SaveChangesAsync();
             return true;
@@ -154,6 +174,10 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 
             if(attemptedLoginCredential.Password != reHashedPassword) return null;
 
+            // If user's already logged in
+            SessionTokenModel? existingSession = await context.Sessions.Where(s => s.Email == loginRequest.Email).FirstOrDefaultAsync();
+            if (existingSession != null) return existingSession.SessionToken;
+
             string sessionToken = Guid.NewGuid().ToString();
 
             await context.Sessions.AddAsync(
@@ -170,17 +194,13 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// </summary>
         /// <param name="session">object that holds information to delete user's session</param>
         /// <returns>true/false success or failure</returns>
-        public async Task<bool> Logout(SessionTokenModel session)
+        public async Task<bool> Logout(string sessionToken)
         {
-            var TokenModel = await context.Sessions.FindAsync(session.Email);
-
-            if (TokenModel != null && TokenModel.Email == session.Email)
-            {
-                context.Sessions.Remove(TokenModel);
-                context.SaveChanges();
-                return true;
-            }
-            else return false;
+            SessionTokenModel? session = await context.Sessions.Where(session => session.SessionToken == sessionToken).FirstOrDefaultAsync();
+            if (session == null) return false;
+            context.Sessions.Remove(session);
+            await context.SaveChangesAsync();
+            return true;
         }
     }
 }
