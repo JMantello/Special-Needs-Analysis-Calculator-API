@@ -46,10 +46,11 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// <returns>true/false for success or failure of the method</returns>
         public async Task<bool> CreateUser(CreateUserModel createUserModel)
         {
+            // adds user table information
             await context.Users.AddAsync(new UserDocument(createUserModel.UserModel));
             
+            // adds login table information
             string salt = Guid.NewGuid().ToString();
-
             await context.UserLogin.AddAsync(new UserLogin(createUserModel.UserModel.Email, SHA256Hash.PasswordHash(createUserModel.Password, salt), salt));
             
             await context.SaveChangesAsync();
@@ -65,11 +66,12 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// <returns>all the user's information stored in the Users table</returns>
         public async Task<UserDocument?> FindUserBySessionToken(string sessionToken)
         {
+            // get session model
             SessionTokenModel? session = await context.Sessions
                 .Where(s => s.SessionToken == sessionToken).FirstOrDefaultAsync();
-            
             if (session == null) return null;
 
+            // use session to find user
             UserDocument? user = await context.Users.FindAsync(session.Email);
             return user;
         }
