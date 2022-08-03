@@ -181,13 +181,16 @@ namespace Special_Needs_Analysis_Calculator.Domain.SpecialNeedsCalculator
         /// </summary>
         /// <returns>Object that holds all of the results</returns>
 
-        // Pre-tax values
-        public List<double> PreTaxAccountValues(double annualContribution, double growthRate)
+        public override List<double> AbleAccountValues()
         {
+            double annualContribution = BM.AnnualABLEContributions;
+            double growthRate = BM.ABLEFundRate;
+
             List<double> values = new List<double>();
+
             double total = 0;
 
-            for (int i = 1; i < RemainingDependency; i++)
+            for(int i = 1; i < RemainingDependency; i++)
             {
                 total = (total + annualContribution) * (1 + growthRate);
                 values.Add(Math.Round(total, 2, MidpointRounding.AwayFromZero));
@@ -196,96 +199,99 @@ namespace Special_Needs_Analysis_Calculator.Domain.SpecialNeedsCalculator
             return values;
         }
 
-        public override List<double> AbleAccountValues()
-        {
-            double annualContribution = BM.AnnualABLEContributions;
-            double growthRate = BM.ABLEFundRate;
-            return PreTaxAccountValues(annualContribution, growthRate);
-
-            //List<double> values = new List<double>();
-
-            //double total = 0;
-
-            //for(int i = 1; i < RemainingDependency; i++)
-            //{
-            //    total = (total + annualContribution) * (1 + growthRate);
-            //    values.Add(Math.Round(total, 2, MidpointRounding.AwayFromZero));
-            //}
-
-            //return values;
-        }
-
         public override List<double> SavingsAccountValues()
         {
             double annualContribution = BM.AnnualABLEContributions;
             double growthRate = 1.01;
-            return PreTaxAccountValues(annualContribution, growthRate);
 
-            //List<double> values = new List<double>();
-            //double annualContribution = BM.AnnualABLEContributions;
-            //double total = 0;
+            List<double> values = new List<double>();
+            double total = 0;
 
-            //for (int i = 1; i < RemainingDependency; i++)
-            //{
-            //    total = (total + annualContribution) * (1.01);
-            //    values.Add(Math.Round(total, 2, MidpointRounding.AwayFromZero));
-            //}
+            for (int i = 1; i < RemainingDependency; i++)
+            {
+                total = (total + annualContribution) * (growthRate);
+                values.Add(Math.Round(total, 2, MidpointRounding.AwayFromZero));
+            }
 
-            //return values;
+            return values;
         }
 
         public override List<double> PostTaxCapitalValues()
         {
             List<double> preTaxValues = AbleAccountValues();
-
+            List<double> postTaxValues = new List<double>();
             // Each value at the end of the year
-            foreach(double value in preTaxValues)
+            foreach (double value in preTaxValues)
             {
                 // Determine tax rate
-                double taxRate = 0;
-
-                // Store value - tax bracket minimum
+                double taxSum = 0;
 
                 if (User.TaxFilingSatus == TaxFilingSatus.Single)
                 {
-                    if (value >= 0 && value <= 40400) taxRate = 0;
-                    if (value >= 40401 && value <= 445850) 
+                    if (value >= 40401 && value <= 445850)
                     {
-                        taxRate = 0.15;
-                        double amountToTax = value - 40401;
-
+                        taxSum += value * .15;
                     }
-                    if (value >= 445851) 
-                    { 
-                        taxRate = 0.2;
-                        double amountToTax = value - 445851;
-                    } 
+                    else if (value >= 445851)
+                    {
+                        // determine previous range tax
+                        var previousRangeTax = (445850 - 40401) * .15;
+
+                        // new range tax
+                        taxSum += previousRangeTax + ((value - 445850) * .20);
+                    }
                 }
 
                 if (User.TaxFilingSatus == TaxFilingSatus.MarriedJointly)
                 {
-                    if (value >= 0 && value <= 80800) taxRate = 0;
-                    if (value >= 80801 && value <= 501600) taxRate = 0.15;
-                    if (value >= 501601) taxRate = 0.2;
+                    if (value >= 80801 && value <= 501600)
+                    {
+                        taxSum += value * .15;
+                    }
+                    else if (value >= 501601)
+                    {
+                        // determine previous range tax
+                        var previousRangeTax = (501600 - 80801) * .15;
+
+                        // new range tax
+                        taxSum += previousRangeTax + ((value - 501601) * .20);
+                    }
                 }
 
                 if (User.TaxFilingSatus == TaxFilingSatus.MarriedSeperately)
                 {
-                    if (value >= 0 && value <= 40400) taxRate = 0;
-                    if (value >= 40401 && value <= 250800) taxRate = 0.15;
-                    if (value >= 250801) taxRate = 0.2;
+                    if (value >= 40401 && value <= 250800)
+                    {
+                        taxSum += value * .15;
+                    }
+                    else if (value >= 250801)
+                    {
+                        // determine previous range tax
+                        var previousRangeTax = (250800 - 40401) * .15;
+
+                        // new range tax
+                        taxSum += previousRangeTax + ((value - 250801) * .20);
+                    }
                 }
 
                 if (User.TaxFilingSatus == TaxFilingSatus.HeadOfHousehold)
                 {
-                    if (value >= 0 && value <= 54100) taxRate = 0;
-                    if (value >= 54101 && value <= 473750) taxRate = 0.15;
-                    if (value >= 473751) taxRate = 0.2;
+                    if (value >= 54101 && value <= 473750)
+                    {
+                        taxSum += value * .15;
+                    }
+                    else if (value >= 473751)
+                    {
+                        // determine previous range tax
+                        var previousRangeTax = (473750 - 54101) * .15;
+
+                        // new range tax
+                        taxSum += previousRangeTax + ((value - 473751) * .20);
+                    }
                 }
-
+                postTaxValues.Add(value-taxSum);
             }
-
-            return null;
+            return postTaxValues;
         }
     }
 }
