@@ -195,8 +195,11 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// <returns>true/false success or failure</returns>
         public async Task<bool> Logout(string sessionToken)
         {
+            // find account on session table
             SessionTokenModel? session = await context.Sessions.Where(session => session.SessionToken == sessionToken).FirstOrDefaultAsync();
             if (session == null) return false;
+
+            // remove entry from session table
             context.Sessions.Remove(session);
             await context.SaveChangesAsync();
             return true;
