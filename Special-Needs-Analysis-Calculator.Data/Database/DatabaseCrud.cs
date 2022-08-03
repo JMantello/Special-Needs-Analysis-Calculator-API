@@ -91,11 +91,15 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// <returns>true/false success or failure</returns>
         public async Task<bool> UpdateUser(UpdateUserModel updateUserModel)
         {
+            // get user's account
             UserDocument? userDocument = await FindUserBySessionToken(updateUserModel.SessionToken);
             if (userDocument == null) return false;
+
+            //update user's information
             userDocument.User = updateUserModel.UserModel;
-            context.Users.Update(userDocument); // I wonder if this step is necessary
-            await context.SaveChangesAsync(); // For if SaveChangesAsync takes care of the update.
+            context.Users.Update(userDocument); 
+            await context.SaveChangesAsync(); 
+
             return true;
         }
 
