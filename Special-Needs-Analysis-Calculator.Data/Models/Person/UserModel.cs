@@ -19,6 +19,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Models
         public string? SecondaryPhoneNumber { get; set; }
         public bool IsAccountActive { get; set; }
         public bool IsOwnBeneficiary { get; set; }
+        public TaxFilingSatus TaxFilingSatus { get; set; } 
 
         public List<BeneficiaryModel>? Beneficiaries { get; set; }
         public UserModel()

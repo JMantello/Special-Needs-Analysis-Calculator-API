@@ -1,9 +1,12 @@
-﻿using Special_Needs_Analysis_Calculator.Data.Models.People;
+﻿using Special_Needs_Analysis_Calculator.Data.Models;
+using Special_Needs_Analysis_Calculator.Data.Models.People;
+using Special_Needs_Analysis_Calculator.Data.Models.Person;
 
 namespace Special_Needs_Analysis_Calculator.Domain.SpecialNeedsCalculator
 {
     public class SpecialNeedsCalculator : TemplateSpecialNeedsCalculator
     {
+        public UserModel User { get; set; }
         public BeneficiaryModel BM { get; set; }
 
         // Fields which we only need to calculate once
@@ -11,8 +14,9 @@ namespace Special_Needs_Analysis_Calculator.Domain.SpecialNeedsCalculator
         public double CostMonthly { get; set; }
 
         // constructor
-        public SpecialNeedsCalculator(BeneficiaryModel beneficiaryModel)
+        public SpecialNeedsCalculator(UserModel user, BeneficiaryModel beneficiaryModel)
         {
+            User = user;
             BM = beneficiaryModel;
             RemainingDependency = GetRemainingDependency();
             CostMonthly = GetCostMonthly();
@@ -169,6 +173,119 @@ namespace Special_Needs_Analysis_Calculator.Domain.SpecialNeedsCalculator
                 BM.ABLEFundRate;
 
             return ableValue;
+        }
+
+        /// <summary>
+        /// Assigns method return balues to object feilds
+        /// in order to be returned in a simpler way
+        /// </summary>
+        /// <returns>Object that holds all of the results</returns>
+
+        // Pre-tax values
+        public List<double> PreTaxAccountValues(double annualContribution, double growthRate)
+        {
+            List<double> values = new List<double>();
+            double total = 0;
+
+            for (int i = 1; i < RemainingDependency; i++)
+            {
+                total = (total + annualContribution) * (1 + growthRate);
+                values.Add(Math.Round(total, 2, MidpointRounding.AwayFromZero));
+            }
+
+            return values;
+        }
+
+        public override List<double> AbleAccountValues()
+        {
+            double annualContribution = BM.AnnualABLEContributions;
+            double growthRate = BM.ABLEFundRate;
+            return PreTaxAccountValues(annualContribution, growthRate);
+
+            //List<double> values = new List<double>();
+
+            //double total = 0;
+
+            //for(int i = 1; i < RemainingDependency; i++)
+            //{
+            //    total = (total + annualContribution) * (1 + growthRate);
+            //    values.Add(Math.Round(total, 2, MidpointRounding.AwayFromZero));
+            //}
+
+            //return values;
+        }
+
+        public override List<double> SavingsAccountValues()
+        {
+            double annualContribution = BM.AnnualABLEContributions;
+            double growthRate = 1.01;
+            return PreTaxAccountValues(annualContribution, growthRate);
+
+            //List<double> values = new List<double>();
+            //double annualContribution = BM.AnnualABLEContributions;
+            //double total = 0;
+
+            //for (int i = 1; i < RemainingDependency; i++)
+            //{
+            //    total = (total + annualContribution) * (1.01);
+            //    values.Add(Math.Round(total, 2, MidpointRounding.AwayFromZero));
+            //}
+
+            //return values;
+        }
+
+        public override List<double> PostTaxCapitalValues()
+        {
+            List<double> preTaxValues = AbleAccountValues();
+
+            // Each value at the end of the year
+            foreach(double value in preTaxValues)
+            {
+                // Determine tax rate
+                double taxRate = 0;
+
+                // Store value - tax bracket minimum
+
+                if (User.TaxFilingSatus == TaxFilingSatus.Single)
+                {
+                    if (value >= 0 && value <= 40400) taxRate = 0;
+                    if (value >= 40401 && value <= 445850) 
+                    {
+                        taxRate = 0.15;
+                        double amountToTax = value - 40401;
+
+                    }
+                    if (value >= 445851) 
+                    { 
+                        taxRate = 0.2;
+                        double amountToTax = value - 445851;
+                    } 
+                }
+
+                if (User.TaxFilingSatus == TaxFilingSatus.MarriedJointly)
+                {
+                    if (value >= 0 && value <= 80800) taxRate = 0;
+                    if (value >= 80801 && value <= 501600) taxRate = 0.15;
+                    if (value >= 501601) taxRate = 0.2;
+                }
+
+                if (User.TaxFilingSatus == TaxFilingSatus.MarriedSeperately)
+                {
+                    if (value >= 0 && value <= 40400) taxRate = 0;
+                    if (value >= 40401 && value <= 250800) taxRate = 0.15;
+                    if (value >= 250801) taxRate = 0.2;
+                }
+
+                if (User.TaxFilingSatus == TaxFilingSatus.HeadOfHousehold)
+                {
+                    if (value >= 0 && value <= 54100) taxRate = 0;
+                    if (value >= 54101 && value <= 473750) taxRate = 0.15;
+                    if (value >= 473751) taxRate = 0.2;
+                }
+
+            }
+
+            return null;
         }
     }
 }

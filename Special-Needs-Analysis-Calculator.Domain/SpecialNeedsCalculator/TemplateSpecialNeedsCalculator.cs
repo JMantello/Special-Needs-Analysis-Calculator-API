@@ -21,6 +21,10 @@ namespace Special_Needs_Analysis_Calculator.Domain.SpecialNeedsCalculator
         public abstract double MaxABLEContribution();
         public abstract double RecommendedABLEContribution();
         public abstract double ABLELifetimeValue();
+        public abstract List<double> AbleAccountValues();
+        public abstract List<double> SavingsAccountValues();
+        public abstract List<double> PostTaxCapitalValues();
+
 
         public BeneficiaryCalculation TemplateResults()
         {
@@ -38,7 +42,10 @@ namespace Special_Needs_Analysis_Calculator.Domain.SpecialNeedsCalculator
                 NetSocialSecurityDisabilityInsurance = NetSocialSecurityDisabilityInsurance(),
                 MaxABLEContribution = MaxABLEContribution(),
                 RecommendedABLEContribution = RecommendedABLEContribution(),
-                ABLELifetimeValue = ABLELifetimeValue()
+                ABLELifetimeValue = ABLELifetimeValue(),
+                AbleAccountValues = AbleAccountValues(),
+                SavingsAccountValues = SavingsAccountValues(),
+                PostTaxCapitalValues = PostTaxCapitalValues()
             };
         }
     }

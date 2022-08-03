@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Special_Needs_Analysis_Calculator.Data.Database;
+using Special_Needs_Analysis_Calculator.Data.Models;
 using Special_Needs_Analysis_Calculator.Data.Models.InputModels;
 using Special_Needs_Analysis_Calculator.Data.Models.Login;
 using Special_Needs_Analysis_Calculator.Data.Models.People;
@@ -123,6 +124,10 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
 
+            // Get user
+            UserDocument userDocument = await context.FindUserBySessionToken(session.SessionToken);
+            UserModel user = userDocument.User;
+
             // Get beneficiaries from database
             List<BeneficiaryModel>? beneficiaries = await context.FindBeneficiariesBySessionToken(session.SessionToken);
             if (beneficiaries == null) return NotFound();
@@ -131,7 +136,7 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
             List<BeneficiaryCalculation> beneficiaryCalculations = new List<BeneficiaryCalculation>();
             foreach (BeneficiaryModel beneficiary in beneficiaries)
             {
-                SpecialNeedsCalculator calculator = new SpecialNeedsCalculator(beneficiary);
+                SpecialNeedsCalculator calculator = new SpecialNeedsCalculator(user, beneficiary);
                 beneficiaryCalculations.Add(calculator.TemplateResults());
             }
 

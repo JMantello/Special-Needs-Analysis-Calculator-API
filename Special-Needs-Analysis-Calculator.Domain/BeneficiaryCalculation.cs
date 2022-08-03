@@ -21,6 +21,9 @@ namespace Special_Needs_Analysis_Calculator.Domain
         public double MaxABLEContribution { get; set; }
         public double RecommendedABLEContribution { get; set; }
         public double ABLELifetimeValue { get; set; }
-        
+        public List<double> AbleAccountValues { get; set; }
+        public List<double> SavingsAccountValues { get; set; }
+        public List<double> PostTaxCapitalValues { get; set; }
+
     }
 }
