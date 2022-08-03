@@ -175,7 +175,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 
             // If user's already logged in
             SessionTokenModel? existingSession = await context.Sessions.Where(s => s.Email == loginRequest.Email).FirstOrDefaultAsync();
-            if (existingSession.SessionToken != null) return existingSession.SessionToken;
+            if (existingSession != null) return existingSession.SessionToken;
 
             string sessionToken = Guid.NewGuid().ToString();
 

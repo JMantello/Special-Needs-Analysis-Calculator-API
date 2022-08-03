@@ -53,11 +53,11 @@ namespace Special_Needs_Analysis_Calculator_Backend.Controllers
         }
 
         [HttpPost("DeleteUser")]
-        public async Task<IActionResult> DeleteUser(string sessionToken)
+        public async Task<IActionResult> DeleteUser(SessionTokenModel session)
         {
             if (!ModelState.IsValid) return BadRequest();
 
-            bool success = await context.DeleteUser(sessionToken);
+            bool success = await context.DeleteUser(session.SessionToken);
 
             if (success) return Ok();
             else return BadRequest();

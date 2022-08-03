@@ -22,6 +22,12 @@ namespace Special_Needs_Analysis_Calculator.Data.Models.InputModels
         }
     }
 
-    public class UpdateBeneficiaryModel : AddBeneficiaryModel { }
+    public class UpdateBeneficiaryModel : AddBeneficiaryModel 
+    {
+        public UpdateBeneficiaryModel() : base()
+        {
+
+        }
+    }
 
 }
