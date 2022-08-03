@@ -143,12 +143,15 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 
         public async Task<bool> UpdateBeneficiary(UpdateBeneficiaryModel model)
         {
+            // get user's account 
             UserDocument? userDocument = await FindUserBySessionToken(model.SessionToken);
             if (userDocument == null || userDocument.User.Beneficiaries == null) return false;
 
+            // get the beneficary from the user's account
             BeneficiaryModel? beneficiary = userDocument.User.Beneficiaries.FirstOrDefault(b => b.Id == model.BeneficiaryModel.Id);
             if (beneficiary == null) return false;
 
+            // replace account with new account
             userDocument.User.Beneficiaries.Remove(beneficiary);
             userDocument.User.Beneficiaries.Add(model.BeneficiaryModel);
 
