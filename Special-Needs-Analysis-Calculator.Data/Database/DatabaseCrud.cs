@@ -108,12 +108,17 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// <returns>true/false success or failure</returns>
         public async Task<bool> DeleteUser(string sessionToken)
         {
+            // get user's account
             UserDocument? userDocument = await FindUserBySessionToken(sessionToken);
             if (userDocument == null) return false;
+
             await Logout(sessionToken);
+
+            // set account to in active (temporary delete)
             userDocument.User.IsAccountActive = false;
             context.Users.Update(userDocument);
             await context.SaveChangesAsync();
+
             return true;
         }
 
