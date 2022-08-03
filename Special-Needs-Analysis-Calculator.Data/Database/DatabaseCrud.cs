@@ -110,6 +110,7 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         {
             UserDocument? userDocument = await FindUserBySessionToken(sessionToken);
             if (userDocument == null) return false;
+            await Logout(sessionToken);
             userDocument.User.IsAccountActive = false;
             context.Users.Update(userDocument);
             await context.SaveChangesAsync();
