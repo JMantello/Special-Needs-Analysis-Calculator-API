@@ -126,18 +126,22 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// <returns>true/false success or failure</returns>
         public async Task<bool> AddBeneficiary(AddBeneficiaryModel addBeneficiaryModel)
         {
+            // get user's account
             UserDocument? userDocument = await FindUserBySessionToken(addBeneficiaryModel.SessionToken);
             if (userDocument == null) return false;
 
+            // create Benificiary list
             if (userDocument.User.Beneficiaries == null)
                 userDocument.User.Beneficiaries = new List<BeneficiaryModel>();
 
+            // assign list item unique ID
             addBeneficiaryModel.BeneficiaryModel.Id = Guid.NewGuid();
 
+            // add model information
             userDocument.User.Beneficiaries.Add(addBeneficiaryModel.BeneficiaryModel);
-            
             context.Users.Update(userDocument);
             await context.SaveChangesAsync();
+
             return true;
         }
 
