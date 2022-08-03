@@ -170,12 +170,5 @@ namespace Special_Needs_Analysis_Calculator.Domain.SpecialNeedsCalculator
 
             return ableValue;
         }
-
-        /// <summary>
-        /// Assigns method return balues to object feilds
-        /// in order to be returned in a simpler way
-        /// </summary>
-        /// <returns>Object that holds all of the results</returns>
-
     }
 }
