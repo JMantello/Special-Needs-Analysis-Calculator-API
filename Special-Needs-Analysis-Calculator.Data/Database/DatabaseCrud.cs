@@ -166,23 +166,22 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
         /// <returns>returns a string representing a sessionid or null on faiure</returns>
         public async Task<string?> Login(UserLogin loginRequest)
         {
+            // attempt to find login credentials
             UserLogin? attemptedLoginCredential = await context.UserLogin.Where(ul => ul.Email == loginRequest.Email).FirstOrDefaultAsync();
-
             if (attemptedLoginCredential == null) return null;
 
+            // autheticate password
             string reHashedPassword = SHA256Hash.PasswordHash(loginRequest.Password, attemptedLoginCredential.Salt);
-
             if(attemptedLoginCredential.Password != reHashedPassword) return null;
 
-            // If user's already logged in
+            // determine if user was already logged in
             SessionTokenModel? existingSession = await context.Sessions.Where(s => s.Email == loginRequest.Email).FirstOrDefaultAsync();
             if (existingSession != null) return existingSession.SessionToken;
 
+            // generate a new session verifying successful login
             string sessionToken = Guid.NewGuid().ToString();
 
-            await context.Sessions.AddAsync(
-                new SessionTokenModel(loginRequest.Email, sessionToken));
-
+            await context.Sessions.AddAsync(new SessionTokenModel(loginRequest.Email, sessionToken));
             await context.SaveChangesAsync();
 
             return sessionToken;
