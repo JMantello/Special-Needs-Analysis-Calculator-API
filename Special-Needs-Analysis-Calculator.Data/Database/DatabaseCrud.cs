@@ -76,9 +76,11 @@ namespace Special_Needs_Analysis_Calculator.Data.Database
 
         public async Task<List<BeneficiaryModel>?> FindBeneficiariesBySessionToken(string sessionToken)
         {
+            // get user's account
             UserDocument? userDocument = await FindUserBySessionToken(sessionToken);
             if (userDocument == null) return null;
-            UserModel? user = userDocument.User;
+            UserModel? user = userDocument.User;   // specify user model
+
             return user.Beneficiaries;
         }
 
