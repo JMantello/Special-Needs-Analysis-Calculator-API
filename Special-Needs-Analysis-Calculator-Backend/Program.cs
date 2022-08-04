@@ -20,6 +20,15 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// cpmfogure cors
+app.UseCors(IApplicationBuilder =>
+{
+    IApplicationBuilder.WithOrigins("http://localhost:4200")
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader();
+});
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
