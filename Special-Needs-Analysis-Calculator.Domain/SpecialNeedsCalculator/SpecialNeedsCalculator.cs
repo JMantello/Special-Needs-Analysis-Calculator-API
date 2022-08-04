@@ -230,7 +230,7 @@ namespace Special_Needs_Analysis_Calculator.Domain.SpecialNeedsCalculator
                 {
                     if (value >= 40401 && value <= 445850)
                     {
-                        taxSum += value * .15;
+                        taxSum += (value-40400) * .15;
                     }
                     else if (value >= 445851)
                     {
@@ -246,7 +246,7 @@ namespace Special_Needs_Analysis_Calculator.Domain.SpecialNeedsCalculator
                 {
                     if (value >= 80801 && value <= 501600)
                     {
-                        taxSum += value * .15;
+                        taxSum += (value-80800) * .15;
                     }
                     else if (value >= 501601)
                     {
@@ -262,7 +262,7 @@ namespace Special_Needs_Analysis_Calculator.Domain.SpecialNeedsCalculator
                 {
                     if (value >= 40401 && value <= 250800)
                     {
-                        taxSum += value * .15;
+                        taxSum += (value-40400) * .15;
                     }
                     else if (value >= 250801)
                     {
@@ -278,7 +278,7 @@ namespace Special_Needs_Analysis_Calculator.Domain.SpecialNeedsCalculator
                 {
                     if (value >= 54101 && value <= 473750)
                     {
-                        taxSum += value * .15;
+                        taxSum += (value-54100) * .15;
                     }
                     else if (value >= 473751)
                     {
