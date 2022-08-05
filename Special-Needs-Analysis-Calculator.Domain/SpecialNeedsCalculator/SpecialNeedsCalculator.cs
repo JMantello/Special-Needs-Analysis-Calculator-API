@@ -4,6 +4,29 @@ using Special_Needs_Analysis_Calculator.Data.Models.Person;
 
 namespace Special_Needs_Analysis_Calculator.Domain.SpecialNeedsCalculator
 {
+    public enum Single
+    {
+        Row1Max = 40400,
+        Row2Max = 445850,
+    }
+
+    public enum MarriedJointly
+    {
+        Row1Max = 80800,
+        Row2Max = 501600,
+    }
+
+    public enum MarriedSeperately
+    {
+        Row1Max = 40400,
+        Row2Max = 250800,
+    }
+    public enum HeadOfHousehold
+    {
+        Row1Max = 54100,
+        Row2Max = 473751,
+    }
+
     public class SpecialNeedsCalculator : TemplateSpecialNeedsCalculator
     {
         public UserModel User { get; set; }
@@ -220,73 +243,91 @@ namespace Special_Needs_Analysis_Calculator.Domain.SpecialNeedsCalculator
         {
             List<double> preTaxValues = AbleAccountValues();
             List<double> postTaxValues = new List<double>();
+
+            // single filing status
+            double SingleRow1 = (double)Single.Row1Max;
+            double SingleRow2 = (double)Single.Row2Max;
+
+            // married joinyly filing status
+            double MarriedJointRow1 = (double)MarriedJointly.Row1Max;
+            double MarriedJointRow2 = (double)MarriedJointly.Row2Max;
+
+            // married seperately filing status
+            double MarriedSepRow1 = (double)MarriedSeperately.Row1Max;
+            double MarriedSepRow2 = (double)MarriedSeperately.Row2Max;
+
+            // head of household filing status
+            double HeadRow1 = (double)HeadOfHousehold.Row1Max;
+            double HeadRow2 = (double)HeadOfHousehold.Row2Max;
+
             // Each value at the end of the year
             foreach (double value in preTaxValues)
             {
                 // Determine tax rate
                 double taxSum = 0;
 
+                
                 if (User.TaxFilingSatus == TaxFilingSatus.Single)
                 {
-                    if (value >= 40401 && value <= 445850)
+                    if (value > SingleRow1 && value <= SingleRow2)
                     {
-                        taxSum += (value-40400) * .15;
+                        taxSum += (value - SingleRow1) * .15;
                     }
-                    else if (value >= 445851)
+                    else if (value > SingleRow2)
                     {
                         // determine previous range tax
-                        var previousRangeTax = (445850 - 40401) * .15;
+                        var previousRangeTax = (SingleRow2 - SingleRow1) * .15;
 
                         // new range tax
-                        taxSum += previousRangeTax + ((value - 445850) * .20);
+                        taxSum += previousRangeTax + ((value - SingleRow2) * .20);
                     }
                 }
 
                 if (User.TaxFilingSatus == TaxFilingSatus.MarriedJointly)
                 {
-                    if (value >= 80801 && value <= 501600)
+                    if (value > MarriedJointRow1 && value <= MarriedJointRow2)
                     {
-                        taxSum += (value-80800) * .15;
+                        taxSum += (value - MarriedJointRow1) * .15;
                     }
-                    else if (value >= 501601)
+                    else if (value > MarriedJointRow2)
                     {
                         // determine previous range tax
-                        var previousRangeTax = (501600 - 80801) * .15;
+                        var previousRangeTax = (MarriedJointRow2 - MarriedJointRow1) * .15;
 
                         // new range tax
-                        taxSum += previousRangeTax + ((value - 501601) * .20);
+                        taxSum += previousRangeTax + ((value - MarriedJointRow2) * .20);
                     }
                 }
 
                 if (User.TaxFilingSatus == TaxFilingSatus.MarriedSeperately)
                 {
-                    if (value >= 40401 && value <= 250800)
+                    if (value > MarriedSepRow1 && value <= MarriedSepRow2)
                     {
-                        taxSum += (value-40400) * .15;
+                        taxSum += (value - MarriedSepRow1) * .15;
                     }
-                    else if (value >= 250801)
+                    else if (value > MarriedSepRow2)
                     {
                         // determine previous range tax
-                        var previousRangeTax = (250800 - 40401) * .15;
+                        var previousRangeTax = (MarriedSepRow2 - MarriedSepRow1) * .15;
 
                         // new range tax
-                        taxSum += previousRangeTax + ((value - 250801) * .20);
+                        taxSum += previousRangeTax + ((value - MarriedSepRow2) * .20);
                     }
                 }
 
                 if (User.TaxFilingSatus == TaxFilingSatus.HeadOfHousehold)
                 {
-                    if (value >= 54101 && value <= 473750)
+                    if (value > HeadRow1 && value <= HeadRow2)
                     {
-                        taxSum += (value-54100) * .15;
+                        taxSum += (value - HeadRow1) * .15;
                     }
-                    else if (value >= 473751)
+                    else if (value > HeadRow2)
                     {
                         // determine previous range tax
-                        var previousRangeTax = (473750 - 54101) * .15;
+                        var previousRangeTax = (HeadRow2 - HeadRow1) * .15;
 
                         // new range tax
-                        taxSum += previousRangeTax + ((value - 473751) * .20);
+                        taxSum += previousRangeTax + ((value - HeadRow2) * .20);
                     }
                 }
                 postTaxValues.Add(value-taxSum);
